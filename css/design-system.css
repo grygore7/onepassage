@@ -1,0 +1,673 @@
+/* ===================================
+   OnePassage - Design System
+   Sistema globale riutilizzabile
+   =================================== */
+
+/* ===================================
+   1. VARIABILI CSS
+   =================================== */
+
+:root[data-theme="light"] {
+    /* Colors */
+    --color-bg-start: #f5f7fa;
+    --color-bg-end: #e8ecf1;
+    --color-card-bg: rgba(255, 255, 255, 0.7);
+    --color-card-hover: rgba(255, 255, 255, 0.95);
+    --color-text-primary: #000000;
+    --color-text-secondary: #000000;
+    --color-text-muted: #4b4b4b;
+    --color-border: rgba(0, 0, 0, 0.08);
+    --color-accent: #10B981;
+    --color-accent-dark: #059669;
+    --color-floating: rgba(16, 185, 129, 0.12);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.12);
+}
+
+:root[data-theme="dark"] {
+    --color-bg-start: #0f1419;
+    --color-bg-end: #1a2332;
+    --color-card-bg: rgba(26, 35, 50, 0.7);
+    --color-card-hover: rgba(26, 35, 50, 0.95);
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #D1D5DB;
+    --color-text-muted: #9CA3AF;
+    --color-border: rgba(255, 255, 255, 0.08);
+    --color-accent: #10B981;
+    --color-accent-dark: #34D399;
+    --color-floating: rgba(16, 185, 129, 0.2);
+    
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.4);
+}
+
+/* ===================================
+   2. RESET
+   =================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--color-text-primary);
+    background: linear-gradient(135deg, var(--color-bg-start) 0%, var(--color-bg-end) 100%);
+    background-attachment: fixed;
+    position: relative;
+    overflow-x: hidden;
+    min-height: 100vh;
+    transition: background 0.5s ease, color 0.5s ease;
+}
+
+/* Sfondo fluttuante globale */
+body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 50%, var(--color-floating) 0%, transparent 50%);
+    animation: floatingGradient 20s ease-in-out infinite;
+    z-index: 0;
+    pointer-events: none;
+    transform: translateY(calc(var(--scroll-y, 0px) * 0.3));
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes floatingGradient {
+    0%, 100% { transform: translateY(calc(var(--scroll-y, 0px) * 0.3)) rotate(0deg) scale(1); }
+    50% { transform: translateY(calc(var(--scroll-y, 0px) * 0.3 - 80px)) rotate(180deg) scale(1.1); }
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ===================================
+   3. TIPOGRAFIA
+   =================================== */
+
+.page-title {
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--color-text-primary);
+    margin-bottom: 24px;
+}
+
+.section-title {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--color-text-primary);
+    margin-bottom: 16px;
+}
+
+.subtitle {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+}
+
+/* ===================================
+   4. LAYOUT CONTAINER
+   =================================== */
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 48px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===================================
+   5. SPACING SECTIONS
+   =================================== */
+
+.section-lg {
+    padding: 120px 0;
+}
+
+.section-md {
+    padding: 80px 0;
+}
+
+.section-sm {
+    padding: 60px 0;
+}
+
+/* ===================================
+   6. HEADER GLOBALE
+   =================================== */
+
+.header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 24px 0;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .header {
+    background: rgba(15, 20, 25, 0.8);
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+.header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    letter-spacing: -0.02em;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.nav-link {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--color-text-secondary);
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--color-text-primary);
+}
+
+.btn-outline {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    border: 1.5px solid #E5E5E5;
+    padding: 10px 24px;
+    border-radius: 100px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+[data-theme="dark"] .btn-outline {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn-outline:hover {
+    background: var(--color-text-primary);
+    color: var(--color-bg-start);
+    border-color: var(--color-text-primary);
+}
+
+.theme-toggle {
+    background: transparent;
+    border: 1.5px solid #E5E5E5;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--color-text-primary);
+    padding: 0;
+}
+
+[data-theme="dark"] .theme-toggle {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-toggle:hover {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #FFFFFF;
+    transform: rotate(180deg);
+}
+
+[data-theme="light"] .moon-icon {
+    display: none;
+}
+
+[data-theme="dark"] .sun-icon {
+    display: none;
+}
+
+/* ===================================
+   7. FOOTER GLOBALE
+   =================================== */
+
+.footer {
+    padding: 48px;
+    text-align: center;
+    border-top: 1px solid var(--color-border);
+}
+
+.footer-content p {
+    color: var(--color-text-muted);
+    font-size: 14px;
+}
+
+/* ===================================
+   8. BOTTONI GLOBALI
+   =================================== */
+
+.btn-primary,
+.btn-secondary,
+.btn-outline {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 14px 32px;
+    border-radius: 100px;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    border: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: var(--color-accent);
+    color: #FFFFFF;
+}
+
+.btn-primary:hover {
+    background: var(--color-accent-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--color-text-primary);
+    border: 2px solid var(--color-border);
+}
+
+.btn-secondary:hover {
+    background: var(--color-card-bg);
+    border-color: var(--color-accent);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--color-text-primary);
+    border: 1.5px solid var(--color-border);
+    padding: 10px 24px;
+}
+
+.btn-outline:hover {
+    background: var(--color-accent);
+    color: #FFFFFF;
+    border-color: var(--color-accent);
+}
+
+/* ===================================
+   9. CARD GLOBALE
+   =================================== */
+
+.card {
+    background: var(--color-card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    padding: 32px;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: var(--shadow-sm);
+}
+
+.card:hover {
+    background: var(--color-card-hover);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+/* ===================================
+   10. BADGES
+   =================================== */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.badge-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-accent);
+}
+
+.badge-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #F59E0B;
+}
+
+.badge-pending {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3B82F6;
+}
+
+.badge-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+}
+
+/* ===================================
+   11. FORMS
+   =================================== */
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 10px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 16px;
+    border: 2px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--color-text-primary);
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group textarea,
+[data-theme="dark"] .form-group select {
+    background: rgba(26, 35, 50, 0.8);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* ===================================
+   12. RESPONSIVE GLOBALE
+   =================================== */
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 40px;
+    }
+    
+    .section-title {
+        font-size: 32px;
+    }
+    
+    .subtitle {
+        font-size: 18px;
+    }
+    
+    .container,
+    .header-container {
+        padding: 0 24px;
+    }
+    
+    .section-lg {
+        padding: 80px 0;
+    }
+    
+    .section-md {
+        padding: 60px 0;
+    }
+    
+    .section-sm {
+        padding: 40px 0;
+    }
+    
+    .nav-link:not(.btn-outline):not(.theme-toggle) {
+        display: none;
+    }
+    
+    .nav {
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 32px;
+    }
+    
+    .section-title {
+        font-size: 28px;
+    }
+    
+    .logo {
+        font-size: 20px;
+    }
+}
+
+/* ===================================
+   13. ACCESSIBILITY
+   =================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+*:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* Wrapper posizionamento relativo per il dropdown */
+.header-avatar-wrap {
+    position: relative;
+}
+
+/* Cerchio con iniziali */
+.header-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.02em;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .2s ease, box-shadow .2s ease;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(16,185,129,.35);
+}
+
+.header-avatar:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 14px rgba(16,185,129,.45);
+}
+
+/* Dropdown panel */
+.header-avatar-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    min-width: 210px;
+    background: var(--color-card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.18);
+    z-index: 1000;
+    overflow: hidden;
+    /* hidden by default */
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px) scale(.97);
+    transition: opacity .18s ease, transform .18s ease;
+}
+
+.header-avatar-menu.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+/* Info utente in cima */
+.avatar-menu-user {
+    padding: 14px 16px 12px;
+}
+
+.avatar-menu-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.avatar-menu-email {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Separatore */
+.avatar-menu-divider {
+    height: 1px;
+    background: var(--color-border);
+    margin: 2px 0;
+}
+
+/* Voci menu */
+.avatar-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    transition: background .15s ease, color .15s ease;
+    cursor: pointer;
+}
+
+.avatar-menu-item i {
+    width: 16px;
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    transition: color .15s ease;
+}
+
+.avatar-menu-item:hover {
+    background: rgba(16,185,129,.07);
+    color: var(--color-accent);
+}
+
+.avatar-menu-item:hover i {
+    color: var(--color-accent);
+}
+
+/* Voce logout — rossa */
+.avatar-menu-item--danger {
+    color: #EF4444;
+}
+
+.avatar-menu-item--danger i {
+    color: #EF4444;
+}
+
+.avatar-menu-item--danger:hover {
+    background: rgba(239,68,68,.07);
+    color: #DC2626;
+}
+
+.avatar-menu-item--danger:hover i {
+    color: #DC2626;
+}
+
+/* ── Header: bottone Accedi (utente non loggato) ── */
+.header-auth-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 20px;
+    border-radius: 100px;
+    border: 1.5px solid var(--color-border);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    transition: background .2s, border-color .2s, color .2s;
+    white-space: nowrap;
+}
+.header-auth-btn:hover {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fff;
+}

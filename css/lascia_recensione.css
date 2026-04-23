@@ -1,0 +1,174 @@
+/* ===================================
+   Lascia Recensione - CSS Specifico
+   =================================== */
+
+.page-container {
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.page-intro {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-intro h1 {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+}
+
+.page-intro p {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+}
+
+/* Alert */
+.alert {
+    padding: 16px 20px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+}
+
+.alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.alert i { font-size: 20px; }
+
+/* Driver Summary Card */
+.driver-summary {
+    text-align: center;
+    padding: 12px 0;
+}
+
+.driver-summary-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin: 0 auto 16px;
+}
+
+.driver-summary-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.driver-summary-event {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+/* Star Rating */
+.star-rating {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    font-size: 48px;
+    margin: 24px 0 12px;
+}
+
+.star-rating input { display: none; }
+
+.star-rating label {
+    cursor: pointer;
+    color: var(--color-border);
+    transition: color 0.2s ease, transform 0.15s ease;
+}
+
+.star-rating label:hover { transform: scale(1.15); }
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    color: #FCD34D;
+}
+
+.rating-text {
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: 28px;
+    min-height: 26px;
+    transition: color 0.3s ease;
+}
+
+/* Tips Box */
+.tips-box {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+}
+
+.tips-box h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tips-box ul {
+    margin-left: 18px;
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+/* Success Card */
+.success-card {
+    text-align: center;
+    padding: 60px 24px;
+}
+
+.success-icon {
+    font-size: 64px;
+    color: var(--color-accent);
+    margin-bottom: 24px;
+}
+
+.success-card h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.success-card p {
+    color: var(--color-text-secondary);
+    margin-bottom: 32px;
+}
+
+.success-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-intro h1 { font-size: 28px; }
+    .star-rating { font-size: 40px; gap: 8px; }
+    .success-actions { flex-direction: column; }
+    .success-actions a { width: 100%; }
+}

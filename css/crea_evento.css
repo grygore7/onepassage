@@ -1,0 +1,305 @@
+/* ===================================
+   Crea Evento - CSS Specifico
+   =================================== */
+
+/* ---- Page Layout ---- */
+.page-container {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.page-intro {
+    margin-bottom: 40px;
+}
+
+.page-intro h1 {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+    color: var(--color-text-primary);
+}
+
+.page-intro p {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+/* ---- Alert ---- */
+.alert {
+    padding: 16px 20px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.alert-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-accent);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.alert i { font-size: 20px; flex-shrink: 0; }
+
+/* ---- Form section divider ---- */
+.form-section-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text-primary);
+}
+
+.form-section-title i { color: var(--color-accent); }
+
+/* ---- Form grid ---- */
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* ---- Input overrides for light-mode clarity ---- */
+[data-theme="light"] .form-group input,
+[data-theme="light"] .form-group textarea,
+[data-theme="light"] .form-group select {
+    color: #1a1a1a;
+    border-color: #d1d5db;
+    background: rgba(255, 255, 255, 0.92);
+}
+
+[data-theme="light"] .form-group input::placeholder,
+[data-theme="light"] .form-group textarea::placeholder {
+    color: #9ca3af;
+}
+
+[data-theme="light"] .form-group input:focus,
+[data-theme="light"] .form-group textarea:focus,
+[data-theme="light"] .form-group select:focus {
+    border-color: var(--color-accent);
+    color: #1a1a1a;
+}
+
+/* ---- Geocoding / Autocomplete wrapper ---- */
+.autocomplete-wrapper {
+    position: relative;
+}
+
+.autocomplete-wrapper input {
+    padding-right: 48px; /* room for spinner/icon */
+}
+
+.geo-btn {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    font-size: 18px;
+    padding: 4px;
+    transition: color 0.25s ease;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.geo-btn:hover { color: var(--color-accent); }
+
+.geo-btn.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ---- Autocomplete Dropdown ---- */
+.autocomplete-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 500;
+    background: var(--color-card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    display: none;
+    max-height: 260px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+}
+
+.autocomplete-dropdown.open { display: block; }
+
+.autocomplete-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-border);
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.autocomplete-item:last-child { border-bottom: none; }
+
+.autocomplete-item:hover,
+.autocomplete-item.focused {
+    background: rgba(16, 185, 129, 0.08);
+}
+
+.autocomplete-item-icon {
+    color: var(--color-accent);
+    font-size: 14px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.autocomplete-item-main {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    line-height: 1.3;
+}
+
+.autocomplete-item-sub {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+}
+
+.autocomplete-loading {
+    padding: 16px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.autocomplete-loading i {
+    animation: spin 1s linear infinite;
+    color: var(--color-accent);
+}
+
+/* ---- Coords display ---- */
+.coords-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 5px 12px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 100px;
+    font-size: 12px;
+    color: var(--color-accent);
+    font-weight: 600;
+    transition: opacity 0.3s ease;
+}
+
+/* ---- Info box ---- */
+.info-box {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.info-box i { color: var(--color-accent); margin-top: 2px; flex-shrink: 0; }
+
+/* ---- Success redirect card ---- */
+.success-card {
+    text-align: center;
+    padding: 60px 24px;
+}
+
+.success-icon {
+    font-size: 64px;
+    color: var(--color-accent);
+    margin-bottom: 24px;
+    display: block;
+}
+
+.success-card h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+}
+
+.success-card p {
+    color: var(--color-text-secondary);
+    margin-bottom: 32px;
+    font-size: 15px;
+}
+
+.success-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.redirect-bar {
+    margin-top: 20px;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--color-border);
+    overflow: hidden;
+    max-width: 240px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.redirect-bar-fill {
+    height: 100%;
+    background: var(--color-accent);
+    width: 0%;
+    animation: fillBar 3s linear forwards;
+}
+
+@keyframes fillBar {
+    to { width: 100%; }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+    .page-intro h1   { font-size: 30px; }
+    .form-grid-2     { grid-template-columns: 1fr; }
+    .success-actions { flex-direction: column; }
+    .success-actions a { width: 100%; }
+}

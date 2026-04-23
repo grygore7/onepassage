@@ -1,0 +1,228 @@
+/* ===================================
+   Profilo - CSS Specifico
+   Solo elementi unici della pagina profilo
+   =================================== */
+
+/* Profile Hero */
+.profile-hero {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: 700;
+    color: #FFFFFF;
+    flex-shrink: 0;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-name {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+}
+
+.profile-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    font-size: 15px;
+    color: var(--color-text-secondary);
+}
+
+.profile-rating .stars {
+    color: #FCD34D;
+    font-size: 16px;
+}
+
+.profile-rating strong {
+    color: var(--color-text-primary);
+}
+
+.profile-badges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.profile-bio {
+    margin-top: 28px;
+    padding-top: 28px;
+    border-top: 1px solid var(--color-border);
+}
+
+.profile-bio h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-bio p {
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+    font-size: 15px;
+}
+
+/* Section Heading */
+.section-heading {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Upcoming Rides */
+.ride-card-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.ride-info { flex: 1; }
+
+.ride-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--color-text-primary);
+}
+
+.ride-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 12px;
+}
+
+.ride-meta-item {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ride-meta-item i {
+    color: var(--color-accent);
+    width: 14px;
+}
+
+/* Reviews */
+.review-item {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.review-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.review-item:first-child {
+    padding-top: 0;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 10px;
+}
+
+.review-author {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+.review-stars {
+    color: #FCD34D;
+    font-size: 14px;
+}
+
+.review-date {
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+.review-text {
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-state-icon {
+    font-size: 40px;
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+}
+
+.empty-state h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+    color: var(--color-text-secondary);
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-hero {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-avatar {
+        margin: 0 auto;
+    }
+
+    .profile-badges,
+    .profile-actions {
+        justify-content: center;
+    }
+
+    .ride-card-inner {
+        flex-direction: column;
+    }
+
+    .profile-name {
+        font-size: 26px;
+    }
+}

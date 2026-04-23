@@ -1,0 +1,239 @@
+/* ===================================
+   Homepage - CSS Specifico
+   Solo elementi unici della homepage
+   =================================== */
+
+/* Header Absolute per Hero */
+.home-header {
+    position: absolute;
+    background: transparent;
+    border-bottom: none;
+}
+
+.home-header .logo,
+.home-header .nav-link,
+.home-header .btn-outline,
+.home-header .theme-toggle {
+    color: #1a1a1a;
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.home-header .btn-outline:hover,
+.home-header .theme-toggle:hover {
+    background: #1a1a1a;
+    color: #FFFFFF;
+    border-color: #1a1a1a;
+}
+
+[data-theme="dark"] .home-header .logo,
+[data-theme="dark"] .home-header .nav-link,
+[data-theme="dark"] .home-header .btn-outline,
+[data-theme="dark"] .home-header .theme-toggle {
+    color: #FFFFFF;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="dark"] .home-header .btn-outline:hover,
+[data-theme="dark"] .home-header .theme-toggle:hover {
+    background: #FFFFFF;
+    color: #000000;
+    border-color: #FFFFFF;
+}
+
+/* Hero Section */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 120px 24px 80px;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.6) 100%);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.hero-title {
+    font-size: 72px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: -0.03em;
+    margin-bottom: 48px;
+    line-height: 1.1;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+[data-theme="dark"] .hero-title {
+    color: #FFFFFF;
+}
+
+.hero-title.animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Search Bar Fluttuante */
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: #FFFFFF;
+    border-radius: 100px;
+    padding: 8px 8px 8px 32px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 900px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
+}
+
+.search-bar.animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.search-field {
+    flex: 1;
+    padding: 0 20px;
+    min-width: 0;
+}
+
+.search-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-weight: 400;
+    color: #000000;
+    background: transparent;
+    padding: 16px 0;
+    font-family: 'Inter', sans-serif;
+}
+
+.search-input::placeholder {
+    color: #999999;
+}
+
+.search-separator {
+    width: 1px;
+    height: 40px;
+    background: #E5E5E5;
+}
+
+.search-button {
+    background: var(--color-accent);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 100px;
+    padding: 18px 40px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.search-button:hover {
+    background: var(--color-accent-dark);
+    transform: scale(1.02);
+}
+
+/* Events Grid Homepage */
+.home-events-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+}
+
+.home-event-card {
+    text-decoration: none;
+    display: block;
+}
+
+.event-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+}
+
+.event-location,
+.event-date {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+}
+
+/* Responsive Homepage */
+@media (max-width: 1024px) {
+    .home-events-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 48px;
+        margin-bottom: 32px;
+    }
+    
+    .search-bar {
+        flex-direction: column;
+        border-radius: 24px;
+        padding: 24px;
+        gap: 0;
+    }
+    
+    .search-field {
+        width: 100%;
+        padding: 0;
+    }
+    
+    .search-input {
+        padding: 16px 0;
+        border-bottom: 1px solid #E5E5E5;
+    }
+    
+    .search-separator {
+        display: none;
+    }
+    
+    .search-button {
+        width: 100%;
+        margin-top: 16px;
+        border-radius: 12px;
+    }
+    
+    .home-events-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 36px;
+    }
+    
+    .search-input {
+        font-size: 15px;
+    }
+}

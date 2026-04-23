@@ -1,0 +1,125 @@
+/* ===================================
+   Offri Passaggio - CSS Specifico
+   =================================== */
+
+.page-container {
+    max-width: 740px;
+    margin: 0 auto;
+}
+
+.page-intro {
+    margin-bottom: 40px;
+}
+
+.page-intro h1 {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+}
+
+.page-intro p {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+/* Alert */
+.alert {
+    padding: 16px 20px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+}
+
+.alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.alert-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-accent);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.alert i { font-size: 20px; }
+
+/* Event Info Box */
+.event-info-box {
+    margin-top: 12px;
+    padding: 14px 16px;
+    background: rgba(16, 185, 129, 0.05);
+    border: 1px solid rgba(16, 185, 129, 0.15);
+    border-radius: 12px;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    display: none;
+}
+
+.event-info-box strong {
+    color: var(--color-text-primary);
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Coords Hint */
+.coords-hint {
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.coords-hint a {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+/* Safety Box */
+.safety-box {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin: 24px 0;
+}
+
+.safety-box h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.safety-box ul {
+    margin-left: 20px;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+/* Form Grid */
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-intro h1 { font-size: 32px; }
+    .form-grid-2 { grid-template-columns: 1fr; }
+}

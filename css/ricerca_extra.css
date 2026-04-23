@@ -1,0 +1,239 @@
+/* ===================================================================
+   ricerca_extra.css
+   CSS AGGIUNTIVO per ricerca.php — non sovrascrive eventi.css
+   Aggiunge: Autocomplete dropdown, GPS button, distance badge,
+             raggio slider, geo-active badge.
+=================================================================== */
+
+/* ── Autocomplete wrapper ── */
+.autocomplete-wrapper {
+    position: relative;
+    display: block; /* block, non flex — lasciamo che l'input stia in flow normale */
+}
+
+/* Input dentro il wrapper: occupa tutta la larghezza ma lascia spazio al bottone GPS */
+.form-group .autocomplete-wrapper input[type="text"],
+.autocomplete-wrapper input[type="text"] {
+    width: 100% !important;
+    padding-right: 48px !important; /* spazio per il bottone */
+    box-sizing: border-box;
+}
+
+/* ── GPS / geo button — posizionato in assoluto sopra l'input ── */
+.geo-search-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    font-size: 16px;
+    padding: 6px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.geo-search-btn:hover {
+    color: var(--color-accent);
+    background: rgba(16, 185, 129, 0.08);
+}
+
+.geo-search-btn.loading {
+    color: var(--color-accent);
+    cursor: wait;
+}
+
+.geo-search-btn.loading i {
+    animation: geoSpin 0.8s linear infinite;
+}
+
+@keyframes geoSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Autocomplete dropdown ── */
+.autocomplete-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 600;
+    background: var(--color-card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    display: none;
+    max-height: 280px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+}
+
+.autocomplete-dropdown.open { display: block; }
+
+.autocomplete-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: background 0.18s ease;
+}
+
+.autocomplete-item:last-child { border-bottom: none; }
+
+.autocomplete-item:hover,
+.autocomplete-item.focused {
+    background: rgba(16, 185, 129, 0.07);
+}
+
+.autocomplete-item-icon {
+    color: var(--color-accent);
+    font-size: 13px;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.autocomplete-item-main {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    line-height: 1.3;
+}
+
+.autocomplete-item-sub {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+}
+
+.autocomplete-loading {
+    padding: 16px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.autocomplete-loading i {
+    color: var(--color-accent);
+    animation: geoSpin 0.8s linear infinite;
+}
+
+/* ── Light mode input clarity ── */
+[data-theme="light"] #luogoInput {
+    color: #1a1a1a;
+    border-color: #d1d5db;
+}
+
+[data-theme="light"] #luogoInput::placeholder {
+    color: #9ca3af;
+}
+
+/* ── Geo active badge (under input) ── */
+.geo-active-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 5px 12px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 100px;
+    font-size: 12px;
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+/* ── Raggio (distance radius) slider row ── */
+.raggio-row {
+    margin: 20px 0 4px;
+    padding: 16px 20px;
+    background: rgba(16, 185, 129, 0.04);
+    border: 1px solid rgba(16, 185, 129, 0.12);
+    border-radius: 14px;
+}
+
+.raggio-row label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: 10px;
+}
+
+.raggio-row label strong { color: var(--color-accent); }
+
+.raggio-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--color-border);
+    outline: none;
+    cursor: pointer;
+    accent-color: var(--color-accent);
+}
+
+.raggio-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+}
+
+/* ── Distance badge on event cards ── */
+.event-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.distance-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ── Fix: prevent double € symbol ──
+   Assicura che il simbolo € sia mostrato una sola volta
+   nei badge prezzi tramite formattazione PHP lato server.
+   Regola difensiva in caso di vecchi template.              */
+.badge-price-text::before {
+    content: none !important;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .autocomplete-dropdown { border-radius: 12px; }
+    .distance-badge        { font-size: 11px; padding: 3px 8px; }
+    .raggio-row            { padding: 12px 14px; }
+}

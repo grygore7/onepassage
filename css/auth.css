@@ -1,0 +1,204 @@
+/* ===================================
+   Auth (Login/Registrazione) - CSS Specifico
+   =================================== */
+
+.auth-container {
+    max-width: 900px;
+    margin: 60px auto;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.tab {
+    padding: 16px 32px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.tab.active {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+}
+
+.tab:hover {
+    color: var(--color-text-primary);
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Alert Messages */
+.alert {
+    padding: 16px 20px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+}
+
+.alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.alert-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-accent);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.alert i {
+    font-size: 20px;
+}
+
+/* Form Grid */
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Info Box */
+.info-box {
+    background: var(--color-card-bg);
+    padding: 16px;
+    border-radius: 12px;
+    margin: 24px 0;
+    border: 1px solid var(--color-border);
+}
+
+.info-box label {
+    display: flex;
+    align-items: start;
+    gap: 12px;
+    cursor: pointer;
+    font-weight: 400;
+}
+
+.info-box input[type="checkbox"] {
+    width: auto;
+    margin-top: 4px;
+}
+
+.info-box a {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+/* Separator */
+.auth-separator {
+    text-align: center;
+    margin: 24px 0;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+}
+
+.auth-separator a {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+/* Benefits Grid */
+.benefits-section {
+    margin-top: 60px;
+}
+
+.benefits-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 32px;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.benefit-item {
+    text-align: center;
+}
+
+.benefit-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    color: white;
+    font-size: 24px;
+}
+
+.benefit-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.benefit-text {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 40px auto;
+    }
+    
+    .form-grid-2 {
+        grid-template-columns: 1fr;
+    }
+    
+    .tabs {
+        gap: 4px;
+    }
+    
+    .tab {
+        padding: 12px 20px;
+        font-size: 15px;
+    }
+    
+    .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
