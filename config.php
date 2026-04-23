@@ -4,12 +4,17 @@
  * Gestisce connessione PDO e sessioni utente
  */
 
-// Configurazione Database
-// Cambia le tue define così:
-define('DB_HOST', 'sql312.infinityfree.com');
-define('DB_NAME', 'if0_41738102_onepassage_db');
-define('DB_USER', 'if0_41738102');
-define('DB_PASS', 'Grigore2502');
+// Recupera le variabili da Railway, se non esistono usa i valori locali
+$db_host = getenv('DB_HOST') ?: 'localhost';
+$db_name = getenv('DB_NAME') ?: 'onepassage';
+$db_user = getenv('DB_USER') ?: 'root';
+$db_pass = getenv('DB_PASS') ?: '';
+
+// Definiamo le costanti usando le variabili recuperate
+define('DB_HOST', $db_host);
+define('DB_NAME', $db_name);
+define('DB_USER', $db_user);
+define('DB_PASS', $db_pass);
 
 // Inizializza sessione
 session_start();
@@ -27,19 +32,16 @@ try {
         ]
     );
 } catch(PDOException $e) {
+    // In produzione su Railway sarebbe meglio non mostrare $e->getMessage() per sicurezza,
+    // ma per il debug ora va benissimo.
     die("Errore di connessione: " . $e->getMessage());
 }
 
 /**
- * Funzione per calcolare distanza tra due coordinate (Formula di Haversine)
- * @param float $lat1 Latitudine punto 1
- * @param float $lon1 Longitudine punto 1
- * @param float $lat2 Latitudine punto 2
- * @param float $lon2 Longitudine punto 2
- * @return float Distanza in KM
+ * Funzioni restanti (calcolaDistanza, isLoggedIn, h) rimangono identiche...
  */
 function calcolaDistanza($lat1, $lon1, $lat2, $lon2) {
-    $earthRadius = 6371; // Raggio Terra in KM
+    $earthRadius = 6371; 
     
     $latFrom = deg2rad($lat1);
     $lonFrom = deg2rad($lon1);
@@ -58,19 +60,10 @@ function calcolaDistanza($lat1, $lon1, $lat2, $lon2) {
     return $earthRadius * $c;
 }
 
-/**
- * Verifica se l'utente è autenticato
- * @return bool
- */
 function isLoggedIn() {
     return isset($_SESSION['user_id']);
 }
 
-/**
- * Funzione per sanitizzare l'output HTML
- * @param string $text
- * @return string
- */
 function h($text) {
     return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 }
