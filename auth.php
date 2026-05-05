@@ -86,8 +86,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accedi - OnePassage</title>
-    <link rel="stylesheet" href="css/design-system.css">
-    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="design-system.css">
+    <link rel="stylesheet" href="auth.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -102,6 +102,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
                 <a href="ricerca.php" class="nav-link">Eventi</a>
                 <a href="come-funziona.php" class="nav-link">Come funziona</a>
                 <a href="auth.php" class="btn-outline active">Accedi</a>
+                <button class="nav-hamburger" id="navHamburger" onclick="openMobileNav()" aria-label="Apri menu">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
                     <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="5"/>
@@ -162,7 +165,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
                         
                         <div class="form-group">
                             <label><i class="fas fa-lock"></i> Password</label>
-                            <input type="password" name="password" required placeholder="........">
+                            <input type="password" name="password" required placeholder="â¢â¢â¢â¢â¢â¢â¢â¢">
                         </div>
                         
                         <button type="submit" name="login" class="btn-primary" style="width: 100%; margin-top: 8px;">
@@ -202,12 +205,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
                         
                         <div class="form-group">
                             <label><i class="fas fa-lock"></i> Password * (min. 6 caratteri)</label>
-                            <input type="password" name="password_reg" required minlength="6" placeholder="........">
+                            <input type="password" name="password_reg" required minlength="6" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢">
                         </div>
                         
                         <div class="form-group">
                             <label><i class="fas fa-lock"></i> Conferma Password *</label>
-                            <input type="password" name="password_confirm" required minlength="6" placeholder="........">
+                            <input type="password" name="password_confirm" required minlength="6" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢">
                         </div>
                         
                         <div class="info-box">
@@ -304,5 +307,34 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
             }
         }, { passive: true });
     </script>
+<!-- ── Mobile Navigation Drawer ── -->
+<div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="closeMobileNav()"></div>
+<div class="mobile-nav-drawer" id="mobileNavDrawer">
+    <div class="drawer-header">
+        <span class="drawer-logo">OnePassage</span>
+        <button class="drawer-close" onclick="closeMobileNav()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="drawer-links">
+        <a href="ricerca.php" class="drawer-link"><i class="fas fa-search"></i> Eventi</a>
+        <a href="come-funziona.php" class="drawer-link"><i class="fas fa-info-circle"></i> Come funziona</a>
+        <div class="drawer-divider"></div>
+        <a href="auth.php" class="drawer-link btn-primary" style="justify-content:center;color:#fff;background:var(--color-accent);">
+            <i class="fas fa-user"></i> Accedi / Registrati
+        </a>
+    </div>
+</div>
+<script>
+function openMobileNav() {
+    document.getElementById('mobileNavOverlay').classList.add('open');
+    document.getElementById('mobileNavDrawer').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeMobileNav() {
+    document.getElementById('mobileNavOverlay').classList.remove('open');
+    document.getElementById('mobileNavDrawer').classList.remove('open');
+    document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeMobileNav(); });
+</script>
 </body>
 </html>

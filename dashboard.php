@@ -65,8 +65,8 @@ $richieste_ricevute_passate= array_filter($richieste_ricevute_raw, fn($r) => str
     <title>Dashboard - OnePassage</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/design-system.css">
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="../css/design-system.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -188,7 +188,7 @@ $richieste_ricevute_passate= array_filter($richieste_ricevute_raw, fn($r) => str
                         </div>
                         <div class="dash-card-actions">
                             <?php if(in_array($richiesta['stato'],['accettato','concluso'])): ?>
-                            <a href="talk.php?request=<?= $richiesta['id'] ?>" class="dash-btn dash-btn--primary"><i class="fas fa-comments"></i> Chat</a>
+                            <a href="chat.php?request=<?= $richiesta['id'] ?>" class="dash-btn dash-btn--primary"><i class="fas fa-comments"></i> Chat</a>
                             <?php endif; ?>
                             <a href="profilo.php?id=<?= $richiesta['driver_id'] ?>" class="dash-btn dash-btn--secondary"><i class="fas fa-user"></i> Profilo</a>
                         </div>
@@ -247,7 +247,7 @@ $richieste_ricevute_passate= array_filter($richieste_ricevute_raw, fn($r) => str
                             <a href="gestisci_richiesta.php?id=<?= $richiesta['id'] ?>&action=accetta" class="dash-btn dash-btn--primary" onclick="return confirm('Accettare?')"><i class="fas fa-check"></i> Accetta</a>
                             <a href="gestisci_richiesta.php?id=<?= $richiesta['id'] ?>&action=rifiuta" class="dash-btn dash-btn--secondary" onclick="return confirm('Rifiutare?')"><i class="fas fa-times"></i> Rifiuta</a>
                             <?php elseif(in_array($richiesta['stato'],['accettato','concluso'])): ?>
-                            <a href="talk.php?request=<?= $richiesta['id'] ?>" class="dash-btn dash-btn--primary"><i class="fas fa-comments"></i> Chat</a>
+                            <a href="chat.php?request=<?= $richiesta['id'] ?>" class="dash-btn dash-btn--primary"><i class="fas fa-comments"></i> Chat</a>
                             <?php endif; ?>
                             <a href="profilo.php?id=<?= $richiesta['user_id'] ?>" class="dash-btn dash-btn--secondary"><i class="fas fa-user"></i> Profilo</a>
                         </div>
@@ -311,7 +311,7 @@ $richieste_ricevute_passate= array_filter($richieste_ricevute_raw, fn($r) => str
                         </div>
                         <div class="dash-card-actions">
                             <?php if(in_array($richiesta['stato'],['accettato','concluso'])): ?>
-                            <a href="talk.php?request=<?= $richiesta['id'] ?>" class="dash-btn dash-btn--secondary"><i class="fas fa-comments"></i> Chat</a>
+                            <a href="chat.php?request=<?= $richiesta['id'] ?>" class="dash-btn dash-btn--secondary"><i class="fas fa-comments"></i> Chat</a>
                             <?php endif; ?>
                             <?php
                                 $haRec = $isSent ? empty($richiesta['stelle']) : empty($richiesta['stelle_driver']);
@@ -375,5 +375,8 @@ $richieste_ricevute_passate= array_filter($richieste_ricevute_raw, fn($r) => str
             icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         });
     </script>
+<a href="offri_passaggio.php" class="mobile-fab">
+    <i class="fas fa-car"></i> Offri Passaggio
+</a>
 </body>
 </html>

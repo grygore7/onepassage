@@ -14,12 +14,12 @@ if ($_hLogged) {
 ?>
 <header class="header">
     <div class="header-container">
-        <a href="index.php" class="logo">OnePassage</a>
+        <a href="../index/index.php" class="logo">OnePassage</a>
         <nav class="nav">
-            <a href="ricerca.php" class="nav-link">Eventi</a>
-            <a href="come-funziona.php" class="nav-link">Come funziona</a>
+            <a href="../index/ricerca.php" class="nav-link">Eventi</a>
+            <a href="../index/come-funziona.php" class="nav-link">Come funziona</a>
             <?php if ($_hLogged): ?>
-            <a href=" dashboard.php" class="nav-link">Dashboard</a>
+            <a href="../index/dashboard.php" class="nav-link">Dashboard</a>
             <?php endif; ?>
 
             <?php if ($_hLogged): ?>
@@ -38,24 +38,29 @@ if ($_hLogged) {
                         <?php endif; ?>
                     </div>
                     <div class="avatar-menu-divider"></div>
-                    <a href="profilo.php?id=<?php echo $_hId; ?>" class="avatar-menu-item">
+                    <a href="../index/profilo.php?id=<?php echo $_hId; ?>" class="avatar-menu-item">
                         <i class="fas fa-user"></i> Vedi profilo
                     </a>
-                    <a href="modifica_profilo.php" class="avatar-menu-item">
+                    <a href="../index/modifica_profilo.php" class="avatar-menu-item">
                         <i class="fas fa-pen"></i> Modifica profilo
                     </a>
                     <div class="avatar-menu-divider"></div>
-                    <a href="auth.php?logout=1" class="avatar-menu-item avatar-menu-item--danger">
+                    <a href="../index/auth.php?logout=1" class="avatar-menu-item avatar-menu-item--danger">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </div>
             </div>
             <?php else: ?>
             <!-- Utente non loggato — bottone accedi/registrati -->
-            <a href="auth.php" class="header-auth-btn">
+            <a href="../index/auth.php" class="header-auth-btn">
                 <i class="fas fa-user"></i> Accedi
             </a>
             <?php endif; ?>
+
+            <!-- Hamburger — visibile solo su mobile via CSS -->
+            <button class="nav-hamburger" id="navHamburger" onclick="openMobileNav()" aria-label="Apri menu">
+                <i class="fas fa-bars"></i>
+            </button>
 
             <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
                 <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -73,6 +78,53 @@ if ($_hLogged) {
     </div>
 </header>
 
+<!-- ── Mobile Navigation Drawer ── -->
+<div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="closeMobileNav()"></div>
+<div class="mobile-nav-drawer" id="mobileNavDrawer">
+    <div class="drawer-header">
+        <span class="drawer-logo">OnePassage</span>
+        <button class="drawer-close" onclick="closeMobileNav()" aria-label="Chiudi menu">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="drawer-links">
+        <a href="../index/ricerca.php" class="drawer-link">
+            <i class="fas fa-search"></i> Eventi
+        </a>
+        <a href="../index/come-funziona.php" class="drawer-link">
+            <i class="fas fa-info-circle"></i> Come funziona
+        </a>
+        <?php if ($_hLogged): ?>
+        <a href="../index/dashboard.php" class="drawer-link">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="../index/offri_passaggio.php" class="drawer-link">
+            <i class="fas fa-car"></i> Offri Passaggio
+        </a>
+        <div class="drawer-divider"></div>
+        <a href="../index/profilo.php?id=<?php echo $_hId; ?>" class="drawer-link">
+            <i class="fas fa-user"></i> Il mio profilo
+        </a>
+        <a href="../index/modifica_profilo.php" class="drawer-link">
+            <i class="fas fa-pen"></i> Modifica profilo
+        </a>
+        <div class="drawer-divider"></div>
+        <div class="drawer-footer">
+            <a href="../index/auth.php?logout=1" class="drawer-link" style="color:#EF4444;">
+                <i class="fas fa-sign-out-alt" style="color:#EF4444;"></i> Logout
+            </a>
+        </div>
+        <?php else: ?>
+        <div class="drawer-divider"></div>
+        <div class="drawer-footer">
+            <a href="../index/auth.php" class="drawer-link btn-primary" style="justify-content:center;color:#fff;background:var(--color-accent);">
+                <i class="fas fa-user"></i> Accedi / Registrati
+            </a>
+        </div>
+        <?php endif; ?>
+    </div>
+</div>
+
 <script>
 function toggleAvatarMenu(e) {
     e.stopPropagation();
@@ -89,6 +141,17 @@ document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         var menu = document.getElementById('avatarMenu');
         if (menu) menu.classList.remove('open');
+        closeMobileNav();
     }
 });
+function openMobileNav() {
+    document.getElementById('mobileNavOverlay').classList.add('open');
+    document.getElementById('mobileNavDrawer').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeMobileNav() {
+    document.getElementById('mobileNavOverlay').classList.remove('open');
+    document.getElementById('mobileNavDrawer').classList.remove('open');
+    document.body.style.overflow = '';
+}
 </script>
