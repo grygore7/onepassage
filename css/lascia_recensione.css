@@ -167,8 +167,20 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-    .page-intro h1 { font-size: 28px; }
-    .star-rating { font-size: 40px; gap: 8px; }
-    .success-actions { flex-direction: column; }
-    .success-actions a { width: 100%; }
+    .page-intro h1       { font-size: 24px; }
+    .page-intro p        { font-size: 14px; }
+    .star-rating         { font-size: 44px; gap: 12px; }
+    .star-rating label   { cursor: pointer; }
+    .success-actions     { flex-direction: column; }
+    .success-actions a   { width: 100%; text-align: center; }
+    .card                { padding: 20px 16px; }
+    /* textarea più comoda */
+    .form-group textarea { min-height: 100px; }
+    form .btn-primary    { width: 100%; }
+}
+@media (max-width: 480px) {
+    .page-intro h1    { font-size: 20px; }
+    .star-rating      { font-size: 40px; gap: 8px; }
+    .form-group input,
+    .form-group textarea { font-size: 16px !important; }
 }

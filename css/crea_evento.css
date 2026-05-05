@@ -298,8 +298,49 @@
 
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
-    .page-intro h1   { font-size: 30px; }
-    .form-grid-2     { grid-template-columns: 1fr; }
+    .page-intro { margin-bottom: 24px; }
+    .page-intro h1   { font-size: 26px; letter-spacing: -0.01em; }
+    .page-intro p    { font-size: 14px; }
+    .form-grid-2     { grid-template-columns: 1fr; gap: 0; }
     .success-actions { flex-direction: column; }
-    .success-actions a { width: 100%; }
+    .success-actions a { width: 100%; text-align: center; }
+
+    /* Form card più compatta */
+    .card { padding: 20px 16px; }
+
+    /* Section titles */
+    .form-section-title { font-size: 15px; margin-top: 20px; margin-bottom: 14px; }
+
+    /* Autocomplete dropdown: non esca dallo schermo */
+    .autocomplete-dropdown { max-height: 200px; border-radius: 12px; }
+    .autocomplete-item     { padding: 10px 14px; }
+    .autocomplete-item-main{ font-size: 13px; }
+    .autocomplete-item-sub { font-size: 11px; }
+
+    /* Coords badge */
+    .coords-badge { font-size: 11px; }
+
+    /* Info box */
+    .info-box { font-size: 12px; padding: 12px 14px; }
+
+    /* Submit button full width */
+    .card > .btn-primary,
+    form > .btn-primary { width: 100%; text-align: center; margin-top: 8px; }
+
+    /* Success card */
+    .success-card { padding: 40px 16px; }
+    .success-icon { font-size: 48px; margin-bottom: 16px; }
+    .success-card h2 { font-size: 22px; }
+    .success-card p  { font-size: 14px; }
+}
+
+@media (max-width: 480px) {
+    .page-intro h1 { font-size: 22px; }
+    /* Geo button: touch target 44px */
+    .geo-btn { width: 44px; height: 44px; right: 0; font-size: 20px; }
+    .autocomplete-wrapper input { padding-right: 52px; }
+    /* Form inputs: font 16px evita zoom iOS */
+    .form-group input,
+    .form-group textarea,
+    .form-group select { font-size: 16px !important; }
 }

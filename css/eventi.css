@@ -133,27 +133,34 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-    .filters-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .filter-actions {
-        flex-direction: column;
-    }
-    
+    /* Filtri */
+    .filters-grid     { grid-template-columns: 1fr; gap: 12px; }
+    .filter-actions   { flex-direction: column; gap: 10px; }
     .filter-actions .btn-primary,
-    .filter-actions .btn-secondary {
-        width: 100%;
-    }
-    
-    .events-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
-    }
-    
-    .results-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-    }
+    .filter-actions .btn-secondary { width: 100%; text-align: center; }
+
+    /* Griglia eventi: 1 colonna */
+    .events-grid  { grid-template-columns: 1fr; gap: 16px; }
+
+    /* Event card compatta */
+    .event-card   { border-radius: 16px; }
+    .event-meta   { flex-wrap: wrap; gap: 8px; font-size: 13px; }
+
+    /* Risultati header */
+    .results-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .results-count  { font-size: 13px; }
+}
+
+@media (max-width: 480px) {
+    /* Card: no hover lift su touch */
+    .event-card:hover { transform: none; box-shadow: var(--shadow-sm); }
+
+    /* Card padding ridotto */
+    .event-card { padding: 16px; }
+    .event-title { font-size: 16px; }
+    .event-description { font-size: 13px; }
+
+    /* Filtri: label più piccola */
+    .filters-card { padding: 16px; }
+    .filter-label { font-size: 12px; }
 }

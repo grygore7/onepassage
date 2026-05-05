@@ -243,28 +243,66 @@
     }
 }
 
+@media (max-width: 1024px) {
+    .chat-layout { grid-template-columns: 1fr 320px; gap: 16px; }
+}
+
 @media (max-width: 768px) {
-    .agreement-header {
-        flex-direction: column;
+    /* Layout: stack verticale */
+    .chat-layout {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
 
+    /* Agreement card: compatta */
+    .agreement-header  { flex-direction: column; gap: 16px; }
+    .agreement-title   { font-size: 18px; }
+
+    /* Actions: riga scrollabile orizzontale */
     .agreement-actions {
         flex-direction: row;
         width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+        flex-wrap: nowrap;
+        gap: 8px;
     }
+    .agreement-actions::-webkit-scrollbar { display: none; }
+    .agreement-actions a,
+    .agreement-actions button,
+    .agreement-actions span { flex-shrink: 0; width: auto !important; }
 
-    .agreement-actions a {
-        flex: 1;
-        text-align: center;
-    }
+    /* Banner conferma */
+    .confirm-ride-banner { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .btn-confirm { width: 100% !important; justify-content: center; }
 
+    /* Chat card: altezza viewport-aware */
     .chat-card {
-        height: 480px;
+        height: calc(100dvh - 280px);
+        min-height: 320px;
     }
 
-    .message-bubble {
-        max-width: 88%;
-    }
+    /* Messaggi */
+    .message-bubble { max-width: 88%; font-size: 14px; }
+
+    /* Input area */
+    .chat-input-area { padding: 12px; }
+    .chat-input      { font-size: 15px; padding: 11px 14px; border-radius: 16px; }
+    .chat-send-btn   { padding: 11px 14px; border-radius: 16px; }
+}
+
+@media (max-width: 480px) {
+    /* Agreement card mini */
+    .agreement-event  { font-size: 13px; }
+    .agreement-meta   { flex-wrap: wrap; gap: 6px; font-size: 12px; }
+
+    /* Chat ancora più alta su schermi stretti */
+    .chat-card { height: calc(100dvh - 240px); min-height: 300px; }
+
+    /* Messaggi */
+    .message-bubble { max-width: 92%; padding: 10px 13px; }
+    .message-time   { font-size: 10px; }
 }
 
 /* ── Real-time: animazione entrata nuovo messaggio ── */

@@ -120,6 +120,34 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-    .page-intro h1 { font-size: 32px; }
-    .form-grid-2 { grid-template-columns: 1fr; }
+    .page-intro        { margin-bottom: 24px; }
+    .page-intro h1     { font-size: 26px; }
+    .page-intro p      { font-size: 14px; }
+    .form-grid-2       { grid-template-columns: 1fr; gap: 0; }
+
+    /* Card form */
+    .card { padding: 20px 16px; }
+
+    /* Event info box */
+    .event-info-box { font-size: 13px; padding: 12px 14px; }
+
+    /* Safety box */
+    .safety-box        { padding: 16px; }
+    .safety-box h4     { font-size: 14px; }
+    .safety-box ul     { font-size: 13px; line-height: 1.7; }
+
+    /* Coords hint */
+    .coords-hint { font-size: 12px; padding: 10px 12px; }
+
+    /* Submit full width */
+    form .btn-primary  { width: 100%; text-align: center; }
+}
+
+@media (max-width: 480px) {
+    .page-intro h1 { font-size: 22px; }
+    .form-group input,
+    .form-group textarea,
+    .form-group select { font-size: 16px !important; }
+    /* Numero posti e prezzo: stack verticale */
+    .form-grid-2 .form-group { margin-bottom: 16px; }
 }

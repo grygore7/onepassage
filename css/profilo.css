@@ -204,25 +204,37 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-    .profile-hero {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .profile-avatar {
-        margin: 0 auto;
-    }
-
+    /* Hero profilo */
+    .profile-hero     { flex-direction: column; text-align: center; gap: 16px; }
+    .profile-avatar   { margin: 0 auto; width: 80px; height: 80px; font-size: 28px; }
+    .profile-name     { font-size: 22px; }
     .profile-badges,
-    .profile-actions {
-        justify-content: center;
-    }
+    .profile-actions  { justify-content: center; flex-wrap: wrap; gap: 8px; }
+    .profile-bio      { font-size: 14px; }
 
-    .ride-card-inner {
-        flex-direction: column;
-    }
+    /* Stats */
+    .profile-stats    { gap: 12px; }
+    .stat-value       { font-size: 22px; }
+    .stat-label       { font-size: 11px; }
 
-    .profile-name {
-        font-size: 26px;
-    }
+    /* Ride cards */
+    .ride-card-inner  { flex-direction: column; gap: 12px; }
+    .ride-card-actions{ flex-direction: row; flex-wrap: wrap; justify-content: flex-start; }
+
+    /* Tabs profilo */
+    .profile-tabs     { gap: 0; overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap; }
+    .profile-tabs::-webkit-scrollbar { display: none; }
+    .profile-tab      { padding: 10px 14px; font-size: 13px; white-space: nowrap; }
+
+    /* Cards sezione */
+    .card             { padding: 16px; border-radius: 14px; }
+}
+
+@media (max-width: 480px) {
+    .profile-avatar   { width: 68px; height: 68px; font-size: 24px; }
+    .profile-name     { font-size: 20px; }
+    .profile-stats    { grid-template-columns: repeat(2, 1fr); }
+    .profile-tab      { padding: 9px 12px; font-size: 12px; }
+    /* No hover lift */
+    .ride-card:hover  { transform: none; }
 }
