@@ -151,9 +151,9 @@ function getOfferCount(PDO $pdo, int $eventId): array
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ricerca Eventi - OnePassage</title>
-    <link rel="stylesheet" href="design-system.css">
-    <link rel="stylesheet" href="eventi.css">
-    <link rel="stylesheet" href="ricerca_extra.css"><!-- autocomplete + geo -->
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/eventi.css">
+    <link rel="stylesheet" href="css/ricerca_extra.css"><!-- autocomplete + geo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
