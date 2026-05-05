@@ -16,10 +16,10 @@ if ($_hLogged) {
     <div class="header-container">
         <a href="../index/index.php" class="logo">OnePassage</a>
         <nav class="nav">
-            <a href="../index/ricerca.php" class="nav-link">Eventi</a>
-            <a href="../index/come-funziona.php" class="nav-link">Come funziona</a>
+            <a href="ricerca.php" class="nav-link">Eventi</a>
+            <a href="come-funziona.php" class="nav-link">Come funziona</a>
             <?php if ($_hLogged): ?>
-            <a href="../index/dashboard.php" class="nav-link">Dashboard</a>
+            <a href="dashboard.php" class="nav-link">Dashboard</a>
             <?php endif; ?>
 
             <?php if ($_hLogged): ?>
@@ -38,21 +38,21 @@ if ($_hLogged) {
                         <?php endif; ?>
                     </div>
                     <div class="avatar-menu-divider"></div>
-                    <a href="../index/profilo.php?id=<?php echo $_hId; ?>" class="avatar-menu-item">
+                    <a href="profilo.php?id=<?php echo $_hId; ?>" class="avatar-menu-item">
                         <i class="fas fa-user"></i> Vedi profilo
                     </a>
-                    <a href="../index/modifica_profilo.php" class="avatar-menu-item">
+                    <a href="modifica_profilo.php" class="avatar-menu-item">
                         <i class="fas fa-pen"></i> Modifica profilo
                     </a>
                     <div class="avatar-menu-divider"></div>
-                    <a href="../index/auth.php?logout=1" class="avatar-menu-item avatar-menu-item--danger">
+                    <a href="auth.php?logout=1" class="avatar-menu-item avatar-menu-item--danger">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </div>
             </div>
             <?php else: ?>
             <!-- Utente non loggato — bottone accedi/registrati -->
-            <a href="../index/auth.php" class="header-auth-btn">
+            <a href="auth.php" class="header-auth-btn">
                 <i class="fas fa-user"></i> Accedi
             </a>
             <?php endif; ?>
@@ -88,36 +88,36 @@ if ($_hLogged) {
         </button>
     </div>
     <div class="drawer-links">
-        <a href="../index/ricerca.php" class="drawer-link">
+        <a href="ricerca.php" class="drawer-link">
             <i class="fas fa-search"></i> Eventi
         </a>
-        <a href="../index/come-funziona.php" class="drawer-link">
+        <a href="come-funziona.php" class="drawer-link">
             <i class="fas fa-info-circle"></i> Come funziona
         </a>
         <?php if ($_hLogged): ?>
-        <a href="../index/dashboard.php" class="drawer-link">
+        <a href="dashboard.php" class="drawer-link">
             <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
-        <a href="../index/offri_passaggio.php" class="drawer-link">
+        <a href="offri_passaggio.php" class="drawer-link">
             <i class="fas fa-car"></i> Offri Passaggio
         </a>
         <div class="drawer-divider"></div>
-        <a href="../index/profilo.php?id=<?php echo $_hId; ?>" class="drawer-link">
+        <a href="profilo.php?id=<?php echo $_hId; ?>" class="drawer-link">
             <i class="fas fa-user"></i> Il mio profilo
         </a>
-        <a href="../index/modifica_profilo.php" class="drawer-link">
+        <a href="modifica_profilo.php" class="drawer-link">
             <i class="fas fa-pen"></i> Modifica profilo
         </a>
         <div class="drawer-divider"></div>
         <div class="drawer-footer">
-            <a href="../index/auth.php?logout=1" class="drawer-link" style="color:#EF4444;">
+            <a href="auth.php?logout=1" class="drawer-link" style="color:#EF4444;">
                 <i class="fas fa-sign-out-alt" style="color:#EF4444;"></i> Logout
             </a>
         </div>
         <?php else: ?>
         <div class="drawer-divider"></div>
         <div class="drawer-footer">
-            <a href="../index/auth.php" class="drawer-link btn-primary" style="justify-content:center;color:#fff;background:var(--color-accent);">
+            <a href="auth.php" class="drawer-link btn-primary" style="justify-content:center;color:#fff;background:var(--color-accent);">
                 <i class="fas fa-user"></i> Accedi / Registrati
             </a>
         </div>
