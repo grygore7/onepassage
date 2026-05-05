@@ -14,7 +14,7 @@ if ($_hLogged) {
 ?>
 <header class="header">
     <div class="header-container">
-        <a href="../index/index.php" class="logo">OnePassage</a>
+        <a href="index.php" class="logo">OnePassage</a>
         <nav class="nav">
             <a href="ricerca.php" class="nav-link">Eventi</a>
             <a href="come-funziona.php" class="nav-link">Come funziona</a>
