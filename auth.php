@@ -165,7 +165,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
                         
                         <div class="form-group">
                             <label><i class="fas fa-lock"></i> Password</label>
-                            <input type="password" name="password" required placeholder="â¢â¢â¢â¢â¢â¢â¢â¢">
+                            <input type="password" name="password" required placeholder="****************">
                         </div>
                         
                         <button type="submit" name="login" class="btn-primary" style="width: 100%; margin-top: 8px;">
@@ -205,12 +205,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
                         
                         <div class="form-group">
                             <label><i class="fas fa-lock"></i> Password * (min. 6 caratteri)</label>
-                            <input type="password" name="password_reg" required minlength="6" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢">
+                            <input type="password" name="password_reg" required minlength="6" placeholder="******">
                         </div>
                         
                         <div class="form-group">
                             <label><i class="fas fa-lock"></i> Conferma Password *</label>
-                            <input type="password" name="password_confirm" required minlength="6" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢">
+                            <input type="password" name="password_confirm" required minlength="6" placeholder="******">
                         </div>
                         
                         <div class="info-box">
