@@ -52,10 +52,8 @@
 
 /* ── Auth Card ── */
 .auth-container .card {
-    border-radius: 0 0 20px 20px;
-    border-top: none;
-    padding: 28px 32px 32px;
-    margin-bottom: 28px;
+    border-radius: 20px;
+    border-top: 1px solid var(--color-border);
 }
 .auth-container .section-title {
     font-size: 22px;
