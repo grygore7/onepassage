@@ -234,7 +234,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
 
             <!-- Benefits -->
             <div class="benefits-section">
-                <h3 class="benefits-title">PerchÃ© iscriversi a OnePassage?</h3>
+                <h3 class="benefits-title">Perché iscriversi a OnePassage?</h3>
                 
                 <div class="benefits-grid">
                     <div class="benefit-item card">
