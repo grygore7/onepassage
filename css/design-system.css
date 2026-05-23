@@ -892,3 +892,66 @@ a {
 @media (min-width: 481px) {
     .mobile-fab { display: none; }
 }
+
+/* ══════════════════════════════════════
+   ANIMAZIONI SELETTIVE
+   - Card eventi e bottoni: hover attivo
+   - Input/textarea: effetti SOLO su focus
+   - Box di ricerca/contenitori: NO hover
+══════════════════════════════════════ */
+
+/* Input: nessun effetto hover — solo focus */
+.form-group input:hover,
+.form-group textarea:hover,
+.form-group select:hover,
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="password"]:hover,
+input[type="number"]:hover,
+input[type="tel"]:hover,
+input[type="date"]:hover,
+input[type="datetime-local"]:hover,
+input[type="search"]:hover,
+input[type="range"]:hover,
+textarea:hover,
+select:hover {
+    /* No border-color change on hover */
+    border-color: var(--color-border) !important;
+    box-shadow: none !important;
+}
+
+/* Contatori / box ricerca: NO hover lift */
+.filters-card:hover,
+.raggio-row:hover,
+.autocomplete-wrapper:hover,
+.search-bar-wrap:hover,
+.hero-section *:hover .hero-section,
+.how-section:hover {
+    transform: none !important;
+    box-shadow: inherit !important;
+    border-color: inherit !important;
+}
+
+/* Card eventi: hover lift ATTIVO */
+.event-card:hover,
+.event-home-card:hover,
+.ride-card:hover,
+.hero-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Bottoni: transizioni attive */
+.btn-primary,
+.btn-secondary,
+.btn-outline,
+.btn-action,
+.btn-confirm,
+.btn-report,
+.dash-btn {
+    transition: background .18s ease, color .18s ease,
+                border-color .18s ease, transform .15s ease,
+                box-shadow .18s ease;
+}
+.btn-primary:hover  { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,.3); }
+.btn-secondary:hover{ transform: translateY(-1px); }

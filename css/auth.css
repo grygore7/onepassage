@@ -52,8 +52,10 @@
 
 /* ── Auth Card ── */
 .auth-container .card {
-    border-radius: 20px;
-    border-top: 1px solid var(--color-border);
+    border-radius: 0 0 20px 20px;
+    border-top: none;
+    padding: 28px 32px 32px;
+    margin-bottom: 28px;
 }
 .auth-container .section-title {
     font-size: 22px;
@@ -250,4 +252,105 @@
 @media (max-width: 380px) {
     .auth-container .card { padding: 16px 14px 20px; }
     .auth-container .tab  { font-size: 13px; }
+}
+
+/* ── SSO Buttons ── */
+.sso-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+.sso-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background .18s, border-color .18s;
+    border: 1.5px solid var(--color-border);
+    background: var(--color-card-bg);
+    color: var(--color-text-primary);
+}
+.sso-btn:hover { background: rgba(16,185,129,.06); border-color: var(--color-accent); }
+.sso-btn--apple { background: var(--color-text-primary); color: var(--color-bg-start); border-color: var(--color-text-primary); }
+.sso-btn--apple:hover { opacity: .85; }
+
+.sso-divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 20px 0 16px;
+    color: var(--color-text-muted); font-size: 13px;
+}
+.sso-divider::before, .sso-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--color-border);
+}
+
+/* ── Password toggle ── */
+.input-password-wrap {
+    position: relative;
+}
+.input-password-wrap input { padding-right: 46px; }
+.toggle-pwd {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; color: var(--color-text-muted);
+    font-size: 15px; padding: 4px; line-height: 1;
+    transition: color .15s;
+}
+.toggle-pwd:hover { color: var(--color-accent); }
+
+/* ── Password strength ── */
+.pwd-strength-bar {
+    height: 4px; background: var(--color-border);
+    border-radius: 100px; margin-top: 8px; overflow: hidden;
+}
+.pwd-strength-fill {
+    height: 100%; width: 0; border-radius: 100px;
+    transition: width .3s, background .3s;
+}
+.pwd-rules {
+    display: flex; flex-wrap: wrap; gap: 6px 14px;
+    margin-top: 8px; font-size: 12px;
+    color: var(--color-text-muted);
+}
+.pwd-rules span { display: flex; align-items: center; gap: 4px; transition: color .18s; }
+.pwd-rules span.ok { color: #10B981; }
+.pwd-rules span i { font-size: 11px; }
+
+/* ── Auth submit button ── */
+.auth-submit { width: 100%; justify-content: center; padding: 14px; margin-top: 8px; }
+
+/* ── OTP card ── */
+.auth-otp-card { text-align: center; padding: 36px 28px; }
+.otp-icon { font-size: 48px; color: var(--color-accent); margin-bottom: 16px; }
+.auth-otp-card h2 { font-size: 22px; margin-bottom: 10px; }
+.otp-subtitle { font-size: 14px; color: var(--color-text-muted); margin-bottom: 24px; line-height: 1.6; }
+.otp-field {
+    width: 100%; max-width: 240px; padding: 16px;
+    font-size: 28px; font-weight: 700; letter-spacing: 12px;
+    text-align: center; border-radius: 16px;
+    border: 2px solid var(--color-border);
+    background: var(--color-bg-start);
+    color: var(--color-text-primary);
+    font-family: 'Inter', monospace;
+    transition: border-color .18s, box-shadow .18s;
+    display: block; margin: 0 auto 20px;
+}
+.otp-field:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(16,185,129,.12);
+}
+.otp-resend { font-size: 13px; color: var(--color-text-muted); margin-top: 20px; }
+.otp-resend a { color: var(--color-accent); font-weight: 600; }
+
+@media (max-width: 480px) {
+    .sso-btn { font-size: 13px; padding: 11px 16px; }
+    .otp-field { font-size: 24px; letter-spacing: 8px; }
+    .auth-otp-card { padding: 24px 16px; }
 }
