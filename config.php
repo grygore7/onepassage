@@ -2,11 +2,11 @@
 session_start();
 
 // ── Database ─────────────────────────────────────────────────
-$host = getenv('MYSQLHOST') ?: '127.0.0.1'; 
+$host = getenv('DB_HOST') ?: '127.0.0.1'; 
 $port = getenv('MYSQLPORT') ?: '3306';
-$dbname = getenv('MYSQLDATABASE') ?: 'onepassage';
-$user = getenv('MYSQLUSER') ?: 'root';
-$password = getenv('MYSQLPASSWORD') ?: '';
+$dbname = getenv('DB_NAME') ?: 'onepassage';
+$user = getenv('DB_USER') ?: 'root';
+$password = getenv('DB_PASS') ?: '';
 
 try {
     $pdo = new PDO(
