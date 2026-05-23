@@ -6,33 +6,33 @@ $_hEmail    = htmlspecialchars($_SESSION['user_email']   ?? '', ENT_QUOTES, 'UTF
 $_hId       = (int)($_SESSION['user_id'] ?? 0);
 $_hInitials = '';
 if ($_hLogged) {
-    $_hInitials = strtoupper(substr($_SESSION['user_nome'] ?? 'U', 0, 1));
-    if (!empty($_SESSION['user_cognome'])) {
-        $_hInitials .= strtoupper(substr($_SESSION['user_cognome'], 0, 1));
-    }
+    $_hInitials  = strtoupper(substr($_SESSION['user_nome']    ?? 'U', 0, 1));
+    $_hInitials .= strtoupper(substr($_SESSION['user_cognome'] ?? '',  0, 1));
 }
 ?>
 <header class="header">
     <div class="header-container">
         <a href="index.php" class="logo">OnePassage</a>
         <nav class="nav">
-            <a href="ricerca.php" class="nav-link">Eventi</a>
-            <a href="come-funziona.php" class="nav-link">Come funziona</a>
-            <?php if ($_hLogged): ?>
-            <a href="dashboard.php" class="nav-link">Dashboard</a>
-            <?php endif; ?>
+            <!-- Lente — link alla ricerca -->
+            <a href="ricerca.php" class="nav-icon-btn" aria-label="Cerca eventi" title="Cerca passaggi">
+                <i class="fas fa-search"></i>
+            </a>
 
             <?php if ($_hLogged): ?>
-            <!-- Utente loggato — avatar con dropdown -->
+            <!-- Dashboard link -->
+            <a href="dashboard.php" class="nav-link">Dashboard</a>
+
+            <!-- Avatar dropdown -->
             <div class="header-avatar-wrap">
                 <button class="header-avatar" id="avatarBtn"
-                        onclick="toggleAvatarMenu(event)"
-                        aria-label="Menu utente">
+                        onclick="toggleAvatarMenu(event)" aria-label="Menu utente"
+                        aria-expanded="false">
                     <?php echo $_hInitials; ?>
                 </button>
                 <div class="header-avatar-menu" id="avatarMenu">
                     <div class="avatar-menu-user">
-                        <div class="avatar-menu-name"><?php echo $_hNome; ?><?php if ($_hCognome) echo ' ' . $_hCognome; ?></div>
+                        <div class="avatar-menu-name"><?php echo $_hNome . ($_hCognome ? ' ' . $_hCognome : ''); ?></div>
                         <?php if ($_hEmail): ?>
                         <div class="avatar-menu-email"><?php echo $_hEmail; ?></div>
                         <?php endif; ?>
@@ -44,25 +44,31 @@ if ($_hLogged) {
                     <a href="modifica_profilo.php" class="avatar-menu-item">
                         <i class="fas fa-pen"></i> Modifica profilo
                     </a>
+                    <a href="offri_passaggio.php" class="avatar-menu-item">
+                        <i class="fas fa-car"></i> Offri passaggio
+                    </a>
                     <div class="avatar-menu-divider"></div>
                     <a href="auth.php?logout=1" class="avatar-menu-item avatar-menu-item--danger">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </div>
             </div>
+
             <?php else: ?>
-            <!-- Utente non loggato — bottone accedi/registrati -->
+            <!-- Non loggato -->
             <a href="auth.php" class="header-auth-btn">
                 <i class="fas fa-user"></i> Accedi
             </a>
             <?php endif; ?>
 
-            <!-- Hamburger — visibile solo su mobile via CSS -->
-            <button class="nav-hamburger" id="navHamburger" onclick="openMobileNav()" aria-label="Apri menu">
+            <!-- Hamburger mobile -->
+            <button class="nav-hamburger" id="navHamburger"
+                    onclick="openMobileNav()" aria-label="Apri menu">
                 <i class="fas fa-bars"></i>
             </button>
 
-            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <!-- Theme toggle -->
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambia tema">
                 <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="5"/>
                     <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
@@ -78,28 +84,25 @@ if ($_hLogged) {
     </div>
 </header>
 
-<!-- ── Mobile Navigation Drawer ── -->
+<!-- ── Mobile Drawer ── -->
 <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="closeMobileNav()"></div>
 <div class="mobile-nav-drawer" id="mobileNavDrawer">
     <div class="drawer-header">
         <span class="drawer-logo">OnePassage</span>
-        <button class="drawer-close" onclick="closeMobileNav()" aria-label="Chiudi menu">
+        <button class="drawer-close" onclick="closeMobileNav()" aria-label="Chiudi">
             <i class="fas fa-times"></i>
         </button>
     </div>
     <div class="drawer-links">
         <a href="ricerca.php" class="drawer-link">
-            <i class="fas fa-search"></i> Eventi
-        </a>
-        <a href="come-funziona.php" class="drawer-link">
-            <i class="fas fa-info-circle"></i> Come funziona
+            <i class="fas fa-search"></i> Cerca passaggi
         </a>
         <?php if ($_hLogged): ?>
         <a href="dashboard.php" class="drawer-link">
             <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
         <a href="offri_passaggio.php" class="drawer-link">
-            <i class="fas fa-car"></i> Offri Passaggio
+            <i class="fas fa-car"></i> Offri passaggio
         </a>
         <div class="drawer-divider"></div>
         <a href="profilo.php?id=<?php echo $_hId; ?>" class="drawer-link">
@@ -117,7 +120,7 @@ if ($_hLogged) {
         <?php else: ?>
         <div class="drawer-divider"></div>
         <div class="drawer-footer">
-            <a href="auth.php" class="drawer-link btn-primary" style="justify-content:center;color:#fff;background:var(--color-accent);">
+            <a href="auth.php" class="drawer-link" style="background:var(--color-accent);color:#fff;border-radius:14px;justify-content:center;">
                 <i class="fas fa-user"></i> Accedi / Registrati
             </a>
         </div>
@@ -134,13 +137,13 @@ function toggleAvatarMenu(e) {
     document.getElementById('avatarBtn').setAttribute('aria-expanded', String(open));
 }
 document.addEventListener('click', function() {
-    var menu = document.getElementById('avatarMenu');
-    if (menu) menu.classList.remove('open');
+    var m = document.getElementById('avatarMenu');
+    if (m) m.classList.remove('open');
 });
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-        var menu = document.getElementById('avatarMenu');
-        if (menu) menu.classList.remove('open');
+        var m = document.getElementById('avatarMenu');
+        if (m) m.classList.remove('open');
         closeMobileNav();
     }
 });
@@ -153,5 +156,12 @@ function closeMobileNav() {
     document.getElementById('mobileNavOverlay').classList.remove('open');
     document.getElementById('mobileNavDrawer').classList.remove('open');
     document.body.style.overflow = '';
+}
+function toggleTheme() {
+    var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('theme', t);
+    var icon = document.querySelector('.theme-toggle i');
+    if (icon) icon.className = t === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
 }
 </script>

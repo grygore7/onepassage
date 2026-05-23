@@ -55,18 +55,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $row = $chk->fetch();
             if ($row['recensito_da_driver'] && $row['recensito_da_passenger'])
                 $pdo->prepare("UPDATE ride_requests SET stato='concluso' WHERE id=?")->execute([$requestId]);
+            // Email notifica all'utente recensito
+            $targetRow = $pdo->prepare("SELECT nome, email FROM users WHERE id=?");
+            $targetRow->execute([$targetId]); $targetRow = $targetRow->fetch();
+            $autoreNome = $isDriver
+                ? $r['driver_nome']
+                : $r['passenger_nome'];
+            if ($targetRow) inviaEmail(
+                $targetRow['email'], $targetRow['nome'],
+                'Hai ricevuto una recensione per "'.$r['nome_evento'].'"',
+                emailNuovaRecensione($targetRow['nome'], $autoreNome, $stelle, $r['nome_evento'])
+            );
             $successo = true;
         } catch (PDOException $e) { $errore = 'Errore durante il salvataggio. Riprova.'; }
     }
 }
 ?>
 <!DOCTYPE html>
-<script>
-    (function() {
-        var t = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', t);
-    })();
-</script>
 <html lang="it" data-theme="light">
 <head>
 <meta charset="UTF-8">

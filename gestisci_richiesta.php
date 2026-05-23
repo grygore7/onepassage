@@ -30,8 +30,16 @@ if ($action === 'accetta') {
         $pdo->prepare("UPDATE ride_requests SET stato = 'accettato' WHERE id = ?")->execute([$requestId]);
         $pdo->prepare("INSERT INTO chat_messages (request_id, sender_id, receiver_id, messaggio, encrypted) VALUES (?,?,?,?,0)")
             ->execute([$requestId, $userId, $richiesta['user_id'], 'Ho accettato la tua richiesta! Organizziamoci per il viaggio 👍']);
+        // Email notifica al passeggero
+        $passRow = $pdo->prepare("SELECT nome, email FROM users WHERE id=?");
+        $passRow->execute([$richiesta['user_id']]); $passRow = $passRow->fetch();
+        if ($passRow) inviaEmail(
+            $passRow['email'], $passRow['nome'],
+            'Il tuo passaggio per "'.$richiesta['nome_evento'].'" è stato accettato! ✅',
+            emailEsitoRichiesta($passRow['nome'], $richiesta['nome_evento'], true)
+        );
         $_SESSION['successo'] = 'Richiesta accettata!';
-        header('Location: talk.php?request=' . $requestId); exit;
+        header('Location: chat.php?request=' . $requestId); exit;
     } catch (PDOException $e) {
         $_SESSION['errore'] = 'Errore durante l\'accettazione.';
         header('Location: dashboard.php'); exit;
@@ -44,6 +52,14 @@ if ($action === 'accetta') {
         $pdo->prepare("UPDATE ride_requests SET stato = 'rifiutato' WHERE id = ?")->execute([$requestId]);
         $pdo->prepare("UPDATE ride_offers SET posti_disponibili = posti_disponibili + 1 WHERE id = ?")
             ->execute([$richiesta['offer_id']]);
+        // Email notifica al passeggero
+        $passRow = $pdo->prepare("SELECT nome, email FROM users WHERE id=?");
+        $passRow->execute([$richiesta['user_id']]); $passRow = $passRow->fetch();
+        if ($passRow) inviaEmail(
+            $passRow['email'], $passRow['nome'],
+            'Aggiornamento sulla tua richiesta per "'.$richiesta['nome_evento'].'"',
+            emailEsitoRichiesta($passRow['nome'], $richiesta['nome_evento'], false)
+        );
         $_SESSION['successo'] = 'Richiesta rifiutata.';
         header('Location: dashboard.php'); exit;
     } catch (PDOException $e) {
@@ -67,7 +83,7 @@ if ($action === 'accetta') {
         $pdo->prepare("INSERT INTO chat_messages (request_id, sender_id, receiver_id, messaggio, encrypted) VALUES (?,?,?,?,0)")
             ->execute([$requestId, $userId, $richiesta['user_id'], '✅ Ho confermato che il passaggio è accordato!']);
         $_SESSION['successo'] = 'Passaggio confermato!';
-        header('Location: talk.php?request=' . $requestId); exit;
+        header('Location: chat.php?request=' . $requestId); exit;
     } catch (PDOException $e) {
         $_SESSION['errore'] = 'Errore.'; header('Location: dashboard.php'); exit;
     }
@@ -87,7 +103,7 @@ if ($action === 'accetta') {
         $pdo->prepare("INSERT INTO chat_messages (request_id, sender_id, receiver_id, messaggio, encrypted) VALUES (?,?,?,?,0)")
             ->execute([$requestId, $userId, $richiesta['driver_id'], '✅ Ho confermato che il passaggio è accordato!']);
         $_SESSION['successo'] = 'Passaggio confermato!';
-        header('Location: talk.php?request=' . $requestId); exit;
+        header('Location: chat.php?request=' . $requestId); exit;
     } catch (PDOException $e) {
         $_SESSION['errore'] = 'Errore.'; header('Location: dashboard.php'); exit;
     }

@@ -66,6 +66,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ->execute([$requestId, $userId, $offerta['driver_id'],
                 'Ciao! Ho richiesto un passaggio per ' . $offerta['nome_evento'] . '. Quando possiamo organizzarci?']);
 
+        // Email notifica al driver
+        $driverRow = $pdo->prepare("SELECT nome, email FROM users WHERE id=?");
+        $driverRow->execute([$offerta['driver_id']]); $driverRow = $driverRow->fetch();
+        $passNome = $_SESSION['user_nome'] . ' ' . ($_SESSION['user_cognome'] ?? '');
+        if ($driverRow) inviaEmail(
+            $driverRow['email'], $driverRow['nome'],
+            'Nuova richiesta di passaggio per "'.$offerta['nome_evento'].'"',
+            emailNuovaRichiesta($driverRow['nome'], $passNome, $offerta['nome_evento'])
+        );
         echo json_encode(['ok' => true, 'request_id' => $requestId]);
 
     } catch (PDOException $e) {
@@ -84,12 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="it" data-theme="light">
 <head>
-    <script>
-    (function() {
-        var t = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', t);
-    })();
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Richiedi Passaggio - OnePassage</title>
@@ -102,7 +105,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-<?php include 'header_snippet.php'; ?>
+<header class="header">
+    <div class="header-container">
+        <a href="index.php" class="logo">OnePassage</a>
+        <nav class="nav">
+            <a href="ricerca.php" class="nav-link">Eventi</a>
+            <a href="dashboard.php" class="nav-link">Dashboard</a>
+            <a href="profilo.php?id=<?= $_SESSION['user_id'] ?>" class="btn-outline">Profilo</a>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+                <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+        </nav>
+    </div>
+</header>
+
 <!-- Toast successo -->
 <div class="toast" id="successToast">
     <div class="toast-icon"><i class="fas fa-check-circle"></i></div>
@@ -229,7 +254,7 @@ document.getElementById('confirmBtn').addEventListener('click', async function (
             document.getElementById('successToast').classList.add('show');
             // Redirect dopo 2s
             setTimeout(() => {
-                window.location.href = 'talk.php?request=' + data.request_id;
+                window.location.href = 'chat.php?request=' + data.request_id;
             }, 2000);
         } else {
             btn.disabled = false;
