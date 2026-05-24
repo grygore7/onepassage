@@ -79,8 +79,11 @@ $eventiEvidenza = $stmt->fetchAll();
 </section>
 
 <!-- ══════════════════════════════════════════════
-     EVENTI IN EVIDENZA
+     BLOCCO UNICO: EVENTI + COME FUNZIONA + TRUST
+     Sfondo continuo, zero divisioni visibili
 ══════════════════════════════════════════════ -->
+<div class="home-content-block">
+
 <section class="section-md">
     <div class="container">
         <div class="section-header">
@@ -215,6 +218,8 @@ $eventiEvidenza = $stmt->fetchAll();
     </div>
 </section>
 
+</div><!-- /home-content-block -->
+
 <?php if (isLoggedIn()): ?>
 <a href="offri_passaggio.php" class="mobile-fab">
     <i class="fas fa-car"></i> Offri Passaggio
@@ -249,6 +254,18 @@ document.addEventListener('DOMContentLoaded', function () {
         if (bar)   bar.classList.add('animate');
     }, 80);
 });
+
+// ── Hero: aggiunge has-bg-image se l'immagine di sfondo esiste ──
+(function() {
+    var hero = document.getElementById('hero');
+    if (!hero) return;
+    var style = window.getComputedStyle(hero);
+    var bg    = style.backgroundImage;
+    // Se c'è un'immagine reale (non solo gradiente), aggiunge la classe
+    if (bg && bg !== 'none' && bg.indexOf('url(') !== -1 && bg.indexOf('images/hero-bg') !== -1) {
+        hero.classList.add('has-bg-image');
+    }
+})();
 
 // ── Hero: parallax scroll ─────────────────────────────────────
 window.addEventListener('scroll', function () {
