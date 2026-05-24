@@ -102,8 +102,7 @@
    COME FUNZIONA
 ══════════════════════════════════════ */
 .how-section {
-    border-top: 1px solid var(--color-border);
-    background: var(--color-bg-start);
+    background: transparent;
 }
 
 .how-grid {
@@ -123,7 +122,7 @@
     border: 1px solid var(--color-border);
     border-radius: 20px;
     padding: 28px 24px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: none;
     transition: transform .18s, box-shadow .18s;
 }
 .how-step:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
@@ -160,10 +159,8 @@
 
 /* ── Trust bar ── */
 .trust-section {
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
     padding: 28px 0;
-    background: var(--color-card-bg);
+    background: transparent;
 }
 .trust-grid {
     display: flex; justify-content: center;
@@ -215,4 +212,28 @@
     .ride-driver      { flex-direction: row; }
     .ride-card-bottom { flex-direction: column; align-items: flex-start; }
     .ride-card-bottom .btn-primary { width: 100%; justify-content: center; }
+}
+
+/* ══════════════════════════════════════════════
+   HOME CONTENT BLOCK
+   Unico contenitore per eventi + come funziona
+   + trust bar. Sfondo continuo senza divisioni.
+══════════════════════════════════════════════ */
+.home-content-block {
+    background: transparent;
+    /* nessun border, nessun shadow — sfondo del body visibile */
+}
+
+/* Le sezioni dentro il blocco non hanno sfondi propri */
+.home-content-block section,
+.home-content-block .how-section,
+.home-content-block .trust-section {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Separatori visivi leggeri tra le sezioni — solo uno spazio, no linee */
+.home-content-block .section-md + .section-md,
+.home-content-block .section-md + .how-section {
+    padding-top: 0;
 }
