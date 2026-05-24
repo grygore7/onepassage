@@ -12,11 +12,7 @@
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
-// ──────────────────────────────────────────────────────────────
-// CONFIGURAZIONE — ottieni la chiave gratuita su
-// https://developer.ticketmaster.com (piano Developer = gratis)
-// ──────────────────────────────────────────────────────────────
-define('TM_API_KEY', 'TUA_CHIAVE_TICKETMASTER');  // ← da configurare
+define('TM_API_KEY', getenv('TICKETMASTER_API_KEY'));
 
 $query = trim($_GET['q'] ?? '');
 if (strlen($query) < 2) {
@@ -29,10 +25,13 @@ $url = 'https://app.ticketmaster.com/discovery/v2/events.json?' . http_build_que
     'apikey'          => TM_API_KEY,
     'keyword'         => $query,
     'countryCode'     => 'IT',
-    'classificationName' => 'Music,Sports',
-    'size'            => 10,
+    // Ticketmaster: usa segmentName per filtrare musica + sport
+    // (classificationName accetta un solo valore per parametro)
+    'segmentName'     => 'Music',   // cambia in 'Sports' per sport
+    'size'            => 12,
     'sort'            => 'date,asc',
-    'startDateTime'   => gmdate('Y-m-d\TH:i:s\Z'), // solo eventi futuri
+    'locale'          => '*',       // include eventi in italiano
+    'startDateTime'   => gmdate('Y-m-d\TH:i:s\Z')
 ]);
 
 $ch = curl_init($url);
@@ -44,10 +43,19 @@ curl_setopt_array($ch, [
 ]);
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$curlErrMsg = curl_error($ch);
 curl_close($ch);
 
 if ($response === false || $httpCode !== 200) {
-    echo json_encode(['error' => 'API non raggiungibile']);
+    $curlErr = curl_error($ch ?? null) ?: 'n/a';
+    echo json_encode([
+        'error'    => 'API non raggiungibile',
+        'http_code'=> $httpCode,
+        'curl_err' => $curlErr,
+        'hint'     => $httpCode === 401
+            ? 'API key non valida — controlla TM_API_KEY'
+            : ($httpCode === 0 ? 'Timeout o cURL non disponibile' : 'Errore HTTP ' . $httpCode),
+    ]);
     exit;
 }
 
