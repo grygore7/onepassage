@@ -25,84 +25,120 @@
     border-color: var(--color-text-primary);
 }
 
-/* Hero Section */
+/* Hero Section — no background image, usa gradiente del tema */
 .hero {
-    min-height: 100vh;
+    /* Altezza compatta: non occupa tutta la viewport senza un'immagine */
+    padding: 100px 24px 72px;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    padding: 120px 24px 80px;
+    overflow: hidden;
+    /* Gradiente decorativo leggero — si integra col body */
+    background: transparent;
 }
 
-.hero-overlay {
+/* Decorazione geometrica di sfondo — cerchi sfumati */
+.hero::before {
+    content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* Overlay attivo solo quando c'è un'immagine di sfondo */
-    background: transparent;
-    z-index: 1;
-    transition: opacity .3s;
+    top: -120px;
+    right: -120px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(16,185,129,.12) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
 }
-/* Overlay scuro solo in dark mode (o quando c'è bg-image via JS) */
-[data-theme="dark"] .hero-overlay {
-    background: radial-gradient(ellipse at center, rgba(0,0,0,.25) 0%, rgba(0,0,0,.5) 100%);
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 360px;
+    height: 360px;
+    background: radial-gradient(circle, rgba(16,185,129,.07) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
 }
-/* Classe aggiunta via JS quando c'è un'immagine reale */
-.hero.has-bg-image .hero-overlay {
-    background: radial-gradient(ellipse at center, rgba(0,0,0,.3) 0%, rgba(0,0,0,.55) 100%);
-}
+
+/* L'overlay non serve senza immagine */
+.hero-overlay { display: none; }
 
 .hero-content {
     position: relative;
     z-index: 2;
     text-align: center;
-    max-width: 1000px;
+    max-width: 860px;
     margin: 0 auto;
+    width: 100%;
+}
+
+/* Eyebrow tag sopra il titolo */
+.hero-eyebrow {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-accent);
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    background: rgba(16,185,129,.1);
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid rgba(16,185,129,.2);
 }
 
 .hero-title {
-    font-size: 72px;
-    font-weight: 700;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 800;
     color: var(--color-text-primary);
     letter-spacing: -0.03em;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
     line-height: 1.1;
     opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform: translateY(24px);
+    transition: opacity .7s cubic-bezier(.25,.46,.45,.94),
+                transform .7s cubic-bezier(.25,.46,.45,.94);
 }
-
 .hero-title.animate {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* Search Bar Fluttuante */
+/* Search Bar */
 .search-bar {
     display: flex;
     align-items: center;
-    background: #FFFFFF;
+    background: var(--color-card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid var(--color-border);
     border-radius: 100px;
-    padding: 8px 8px 8px 32px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    max-width: 900px;
+    padding: 6px 6px 6px 28px;
+    box-shadow: 0 8px 40px rgba(0,0,0,.1), 0 2px 8px rgba(0,0,0,.06);
+    max-width: 820px;
     margin: 0 auto;
     opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
+    transform: translateY(24px);
+    transition: opacity .7s cubic-bezier(.25,.46,.45,.94) .15s,
+                transform .7s cubic-bezier(.25,.46,.45,.94) .15s,
+                border-color .2s, box-shadow .2s;
 }
-
 .search-bar.animate {
     opacity: 1;
     transform: translateY(0);
 }
+.search-bar:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: 0 8px 40px rgba(0,0,0,.1), 0 0 0 3px rgba(16,185,129,.12);
+}
 
 .search-field {
     flex: 1;
-    padding: 0 20px;
+    padding: 0 16px;
     min-width: 0;
 }
 
@@ -110,43 +146,72 @@
     width: 100%;
     border: none;
     outline: none;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 400;
-    color: #000000;
+    color: var(--color-text-primary);
     background: transparent;
-    padding: 16px 0;
+    padding: 14px 0;
     font-family: 'Inter', sans-serif;
 }
-
 .search-input::placeholder {
-    color: #999999;
+    color: var(--color-text-muted);
 }
 
 .search-separator {
     width: 1px;
-    height: 40px;
-    background: #E5E5E5;
+    height: 36px;
+    background: var(--color-border);
+    flex-shrink: 0;
 }
 
 .search-button {
     background: var(--color-accent);
-    color: #FFFFFF;
+    color: #fff;
     border: none;
     border-radius: 100px;
-    padding: 18px 40px;
-    font-size: 16px;
+    padding: 14px 32px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background .2s, transform .15s, box-shadow .2s;
     font-family: 'Inter', sans-serif;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
-
 .search-button:hover {
     background: var(--color-accent-dark);
     transform: scale(1.02);
+    box-shadow: 0 4px 16px rgba(16,185,129,.35);
 }
 
-/* Events Grid Homepage */
+/* Responsive hero */
+@media (max-width: 768px) {
+    .hero { padding: 80px 16px 56px; }
+    .hero-title { font-size: clamp(28px, 8vw, 40px); margin-bottom: 28px; }
+    .search-bar {
+        flex-direction: column;
+        border-radius: 20px;
+        padding: 12px;
+        gap: 4px;
+        align-items: stretch;
+    }
+    .search-field { padding: 4px 12px; }
+    .search-input { padding: 10px 0; }
+    .search-separator { width: 100%; height: 1px; margin: 2px 0; }
+    .search-button {
+        border-radius: 14px;
+        padding: 13px 20px;
+        width: 100%;
+    }
+}
+@media (max-width: 480px) {
+    .hero { padding: 64px 14px 40px; }
+    .hero-title { font-size: 28px; }
+    .hero-eyebrow { font-size: 11px; }
+}
+
+
+/* Events Grid Homepage *//* Events Grid Homepage */
 .home-events-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -228,39 +293,12 @@
         font-size: 15px;
     }
 }
-/* ── Hero Background (parallax) ────────────────────────────────
-   Imposta qui l'immagine di sfondo della hero.
-   Sostituisci l'URL con la tua immagine in /images/hero-bg.jpg
-   oppure usa un servizio come Unsplash con ?auto=format&fit=crop
-   ─────────────────────────────────────────────────────────────── */
-/* Quando hai un'immagine hero, aggiungila qui:
-.hero {
-    background-image: url('images/hero-bg.jpg');
-    background-size: cover;
-    background-position: center top;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
-Aggiungi anche la classe .has-bg-image al tag <section class="hero"> in index.php */
 
-/* Fallback senza immagine: gradiente verde scuro */
-/* Fallback senza immagine: usa il gradiente del body (trasparente = eredita) */
-.hero {
-    background-color: transparent;
-}
 /* Hero title: si adatta al tema quando non c'è immagine */
-[data-theme="light"] .hero:not(.has-bg-image) .hero-title {
-    color: var(--color-text-primary);
-    text-shadow: none;
-}
-[data-theme="dark"] .hero:not(.has-bg-image) .hero-title {
-    color: var(--color-text-primary);
-    text-shadow: none;
-}
+
+
 /* Search bar: in light mode rimane leggibile */
-[data-theme="light"] .hero:not(.has-bg-image) .search-bar {
-    box-shadow: 0 8px 32px rgba(0,0,0,.12);
-}
+
 
 /* ── Hero search: autocomplete dropdown ── */
 .hero-search-dropdown {
