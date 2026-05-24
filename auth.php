@@ -43,6 +43,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify_otp'])) {
     }
 }
 
+// ── Reinvia OTP ──────────────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resend_otp'])) {
+    $userId = (int)($_POST['otp_user_id'] ?? 0);
+    if ($userId) {
+        $uRow = $pdo->prepare("SELECT nome, email FROM users WHERE id=? AND email_verificata=0");
+        $uRow->execute([$userId]);
+        $uRow = $uRow->fetch();
+        if ($uRow) {
+            $codice = generaOTP($pdo, $userId);
+            inviaEmail($uRow['email'], $uRow['nome'],
+                'Nuovo codice verifica OnePassage', emailOTP($uRow['nome'], $codice));
+            $successo  = 'Nuovo codice inviato a ' . h($uRow['email']) . '.';
+        }
+        $stepOTP   = true;
+        $otpUserId = $userId;
+    }
+}
+
 // ── Login ─────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     $email    = trim($_POST['email'] ?? '');
@@ -98,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
         if ($check->fetch()) {
             $errore = 'Email già registrata.';
         } else {
+            $pdo->beginTransaction();
             try {
                 $hash = password_hash($pwd, PASSWORD_DEFAULT);
                 $ins  = $pdo->prepare(
@@ -106,15 +125,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
                 );
                 $ins->execute([$nome, $cognome, $email, $hash]);
                 $newId = (int)$pdo->lastInsertId();
-                // Invia OTP
-                $codice = generaOTP($pdo, $newId);
-                inviaEmail($email, $nome,
-                    'Verifica il tuo account OnePassage', emailOTP($nome, $codice));
+
+                // Genera OTP e salva nel DB (dentro la transazione)
+                $codice   = generaOTP($pdo, $newId);
+                $pdo->commit(); // commit prima di inviare email
+
+                // Invia email — se fallisce l'utente esiste già ma può
+                // richiedere un nuovo codice al prossimo login
+                $mailInviata = inviaEmail($email, $nome,
+                    'Verifica il tuo account OnePassage',
+                    emailOTP($nome, $codice));
+
                 $stepOTP   = true;
                 $otpUserId = $newId;
-                $successo  = 'Account creato! Controlla la tua email per il codice di verifica.';
+                $successo  = $mailInviata
+                    ? 'Account creato! Controlla la tua email per il codice di verifica.'
+                    : 'Account creato! Purtroppo l'email non è stata inviata — usa "Invia di nuovo" per ricevere il codice.';
             } catch (PDOException $e) {
-                $errore = 'Errore durante la registrazione.';
+                if ($pdo->inTransaction()) $pdo->rollBack();
+                $errore = 'Errore durante la registrazione: ' . $e->getMessage();
+                error_log('[OnePassage Reg] ' . $e->getMessage());
             }
         }
     }
@@ -162,7 +192,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
         </form>
         <p class="otp-resend">
             Non hai ricevuto il codice?
-            <a href="auth.php?resend=<?= $otpUserId ?>">Invia di nuovo</a>
+            <form method="post" style="display:inline;">
+                <input type="hidden" name="otp_user_id" value="<?= $otpUserId ?>">
+                <button type="submit" name="resend_otp" style="background:none;border:none;color:var(--color-accent);font-weight:600;cursor:pointer;padding:0;font-size:inherit;">Invia di nuovo</button>
+            </form>
         </p>
     </div>
 
@@ -184,14 +217,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     <div id="login-content" class="tab-content card active">
         <!-- SSO -->
         <div class="sso-buttons">
-            <button class="sso-btn sso-btn--google" onclick="alert('Google SSO — configura OAuth client ID')">
+            <a href="sso_callback.php?provider=google" class="sso-btn sso-btn--google">
                 <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v8.51h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.14z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/></svg>
                 Continua con Google
-            </button>
-            <button class="sso-btn sso-btn--apple" onclick="alert('Apple Sign In — configura Apple Developer')">
+            </a>
+            <a href="sso_callback.php?provider=apple" class="sso-btn sso-btn--apple">
                 <svg width="18" height="18" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.3-164-39.3c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 376.8 37 285.3 37 226.8c0-112.4 73.5-171.8 145.9-171.8 38.4 0 70.5 25.4 94.8 25.4 23.1 0 59.2-27.1 104.2-27.1 37.3 0 134.4 6.4 202.3 95.3zm-257-130.6c-5.1-32.5-17.9-72.8-45.7-102.2-23.8-25.6-60.8-44.5-96.8-44.5-1.9 0-3.8.1-5.7.4 1.3 33.8 13.5 73.5 41.3 103.4 24.5 27.1 62.5 47.3 107 47.3 1.9 0 3.8-.1 5.7-.2 0-1.4-.1-2.9-.1-4.2z"/></svg>
                 Continua con Apple
-            </button>
+            </a>
         </div>
         <div class="sso-divider"><span>oppure</span></div>
 
@@ -221,14 +254,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     <div id="register-content" class="tab-content card">
         <!-- SSO -->
         <div class="sso-buttons">
-            <button class="sso-btn sso-btn--google" onclick="alert('Google SSO — configura OAuth client ID')">
+            <a href="sso_callback.php?provider=google" class="sso-btn sso-btn--google">
                 <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v8.51h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.14z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/></svg>
                 Registrati con Google
-            </button>
-            <button class="sso-btn sso-btn--apple" onclick="alert('Apple Sign In — configura Apple Developer')">
+            </a>
+            <a href="sso_callback.php?provider=apple" class="sso-btn sso-btn--apple">
                 <svg width="18" height="18" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.3-164-39.3c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 376.8 37 285.3 37 226.8c0-112.4 73.5-171.8 145.9-171.8 38.4 0 70.5 25.4 94.8 25.4 23.1 0 59.2-27.1 104.2-27.1 37.3 0 134.4 6.4 202.3 95.3zm-257-130.6c-5.1-32.5-17.9-72.8-45.7-102.2-23.8-25.6-60.8-44.5-96.8-44.5-1.9 0-3.8.1-5.7.4 1.3 33.8 13.5 73.5 41.3 103.4 24.5 27.1 62.5 47.3 107 47.3 1.9 0 3.8-.1 5.7-.2 0-1.4-.1-2.9-.1-4.2z"/></svg>
                 Registrati con Apple
-            </button>
+            </a>
         </div>
         <div class="sso-divider"><span>oppure</span></div>
 
