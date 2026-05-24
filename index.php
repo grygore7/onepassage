@@ -34,6 +34,7 @@ $eventiEvidenza = $stmt->fetchAll();
     <meta name="description" content="Trova o offri un passaggio per concerti, festival ed eventi sportivi. Connettiti con chi parte dalla tua zona.">
     <script>(function(){var t=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',t);})();</script>
     <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/style-home.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -43,56 +44,37 @@ $eventiEvidenza = $stmt->fetchAll();
 <?php include 'header_snippet.php'; ?>
 
 <!-- ══════════════════════════════════════════════
-     HERO
+     HERO — parallax + search bar centrata
 ══════════════════════════════════════════════ -->
-<section class="hero-section">
-    <div class="hero-bg-shapes">
-        <div class="hero-shape hero-shape--1"></div>
-        <div class="hero-shape hero-shape--2"></div>
-    </div>
-    <div class="container hero-inner">
-        <div class="hero-text">
-            <div class="hero-eyebrow">🎵 Concerti · Festival · Sport</div>
-            <h1 class="hero-title">
-                Il passaggio intelligente<br>
-                <span class="hero-accent">per i tuoi eventi</span>
-            </h1>
-            <p class="hero-subtitle">
-                Trova chi parte dalla tua zona o condividi la tua auto.<br>
-                Zero stress, più risparmio, nuove amicizie.
-            </p>
-            <div class="hero-ctas">
-                <a href="ricerca.php" class="btn-primary hero-cta-main">
-                    <i class="fas fa-search"></i> Cerca un passaggio
-                </a>
-                <?php if (isLoggedIn()): ?>
-                <a href="offri_passaggio.php" class="btn-secondary">
-                    <i class="fas fa-car"></i> Offri passaggio
-                </a>
-                <?php else: ?>
-                <a href="auth.php" class="btn-secondary">
-                    <i class="fas fa-user-plus"></i> Registrati gratis
-                </a>
-                <?php endif; ?>
+<section class="hero" id="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1 class="hero-title" id="heroTitle">Dove vuoi andare?</h1>
+
+        <!-- Search bar orizzontale centrata -->
+        <form class="search-bar" id="searchBar" method="get" action="ricerca.php">
+            <div class="search-field">
+                <input type="text" class="search-input" name="q"
+                       placeholder="Evento, artista, squadra..."
+                       autocomplete="off">
             </div>
-        </div>
-        <div class="hero-stats">
-            <div class="hero-stat-card">
-                <div class="hero-stat-icon"><i class="fas fa-users"></i></div>
-                <div class="hero-stat-num">+1.200</div>
-                <div class="hero-stat-label">Utenti attivi</div>
+            <div class="search-separator"></div>
+            <div class="search-field">
+                <input type="text" class="search-input" name="luogo"
+                       id="heroLuogo" placeholder="Città di partenza"
+                       autocomplete="off">
+                <input type="hidden" name="ulat" id="heroUlat">
+                <input type="hidden" name="ulon" id="heroUlon">
             </div>
-            <div class="hero-stat-card">
-                <div class="hero-stat-icon"><i class="fas fa-car"></i></div>
-                <div class="hero-stat-num">+800</div>
-                <div class="hero-stat-label">Passaggi offerti</div>
+            <div class="search-separator"></div>
+            <div class="search-field">
+                <input type="date" class="search-input" name="data"
+                       min="<?= date('Y-m-d') ?>">
             </div>
-            <div class="hero-stat-card">
-                <div class="hero-stat-icon"><i class="fas fa-music"></i></div>
-                <div class="hero-stat-num">+250</div>
-                <div class="hero-stat-label">Eventi coperti</div>
-            </div>
-        </div>
+            <button type="submit" class="search-button">
+                <i class="fas fa-search"></i> Cerca
+            </button>
+        </form>
     </div>
 </section>
 
@@ -251,11 +233,90 @@ $eventiEvidenza = $stmt->fetchAll();
 </footer>
 
 <script>
+// ── Tema ─────────────────────────────────────────────────────
 function toggleTheme() {
     var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', t);
     localStorage.setItem('theme', t);
 }
+
+// ── Hero: entry animation ─────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(function () {
+        var title = document.getElementById('heroTitle');
+        var bar   = document.getElementById('searchBar');
+        if (title) title.classList.add('animate');
+        if (bar)   bar.classList.add('animate');
+    }, 80);
+});
+
+// ── Hero: parallax scroll ─────────────────────────────────────
+window.addEventListener('scroll', function () {
+    var hero    = document.getElementById('hero');
+    var overlay = hero && hero.querySelector('.hero-overlay');
+    if (!hero) return;
+    var scrollY = window.pageYOffset;
+    // Muovi lo sfondo più lentamente dello scroll (effetto parallax)
+    hero.style.backgroundPositionY = Math.round(scrollY * 0.45) + 'px';
+    // Aumenta leggermente l'overlay man mano che si scrolla
+    if (overlay) overlay.style.opacity = Math.min(0.75, 0.45 + scrollY * 0.0008);
+}, { passive: true });
+
+// ── Geocoding campo città nella search bar ────────────────────
+var _heroLuogoTimer = null;
+var heroLuogoInput  = document.getElementById('heroLuogo');
+var heroLuogoDD     = null;
+
+if (heroLuogoInput) {
+    // Crea dropdown autocomplete
+    heroLuogoDD = document.createElement('div');
+    heroLuogoDD.className = 'hero-search-dropdown';
+    heroLuogoInput.parentNode.style.position = 'relative';
+    heroLuogoInput.parentNode.appendChild(heroLuogoDD);
+
+    heroLuogoInput.addEventListener('input', function () {
+        var q = this.value.trim();
+        clearTimeout(_heroLuogoTimer);
+        if (q.length < 2) { heroLuogoDD.style.display = 'none'; return; }
+        _heroLuogoTimer = setTimeout(function () {
+            fetch('geocode_proxy.php?q=' + encodeURIComponent(q))
+                .then(function (r) { return r.json(); })
+                .then(function (data) { showHeroGeoDD(data.features || []); })
+                .catch(function () {});
+        }, 320);
+    });
+
+    // GPS button
+    heroLuogoInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') heroLuogoDD.style.display = 'none';
+    });
+}
+
+function showHeroGeoDD(features) {
+    if (!heroLuogoDD) return;
+    if (!features.length) { heroLuogoDD.style.display = 'none'; return; }
+    heroLuogoDD.innerHTML = '';
+    features.slice(0, 5).forEach(function (f) {
+        var label = f.properties.label || f.properties.name || '';
+        var item  = document.createElement('div');
+        item.className   = 'hero-search-dd-item';
+        item.textContent = label;
+        item.addEventListener('click', function () {
+            heroLuogoInput.value = label;
+            document.getElementById('heroUlat').value = f.geometry.coordinates[1];
+            document.getElementById('heroUlon').value = f.geometry.coordinates[0];
+            heroLuogoDD.style.display = 'none';
+        });
+        heroLuogoDD.appendChild(item);
+    });
+    heroLuogoDD.style.display = 'block';
+}
+
+document.addEventListener('click', function (e) {
+    if (heroLuogoDD && !e.target.closest('#heroLuogo') && !e.target.closest('.hero-search-dropdown')) {
+        heroLuogoDD.style.display = 'none';
+    }
+});
 </script>
 </body>
 </html>
