@@ -1,0 +1,348 @@
+/* ===================================
+   ricerca.css — Pagina cerca passaggio
+   =================================== */
+
+/* ── Header pagina ── */
+.search-page-header {
+    margin-bottom: 32px;
+}
+.search-page-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+}
+.search-page-header p {
+    font-size: 15px;
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+/* ── Filtri ── */
+.search-filters {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+}
+
+.search-filters-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 180px 200px;
+    gap: 20px;
+    align-items: end;
+    margin-bottom: 24px;
+}
+
+.search-filter-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+.required-mark {
+    color: var(--color-accent);
+    margin-left: 2px;
+}
+
+.search-filter-field input[type="text"],
+.search-filter-field input[type="date"] {
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    color: var(--color-text-primary);
+    background: var(--color-bg-start);
+    border: 1.5px solid var(--color-border);
+    border-radius: 12px;
+    outline: none;
+    transition: border-color .18s;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+}
+.search-filter-field input:focus {
+    border-color: var(--color-accent);
+}
+.search-filter-field input.input-error {
+    border-color: #EF4444;
+}
+.field-error-hint {
+    font-size: 12px;
+    color: #EF4444;
+    margin-top: 5px;
+}
+
+/* Raggio slider */
+.search-filter-field input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--color-border);
+    border-radius: 100px;
+    outline: none;
+    margin-top: 12px;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+}
+.search-filter-field input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(16,185,129,.35);
+}
+.search-filter-field label strong {
+    color: var(--color-accent);
+    font-weight: 700;
+    margin-left: 4px;
+}
+
+/* Campo con GPS */
+.geo-field-wrap {
+    position: relative;
+}
+.geo-field-wrap input {
+    padding-right: 42px !important;
+}
+.geo-btn {
+    position: absolute;
+    right: 10px; top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    font-size: 15px;
+    padding: 4px;
+    line-height: 1;
+    transition: color .18s;
+}
+.geo-btn:hover { color: var(--color-accent); }
+
+/* Autocomplete dropdown */
+.geo-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.12);
+    z-index: 100;
+    overflow: hidden;
+}
+.geo-dropdown.open { display: block; }
+.geo-dd-item {
+    padding: 11px 16px;
+    font-size: 13px;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: background .14s;
+    border-bottom: 1px solid var(--color-border);
+    font-family: 'Inter', sans-serif;
+}
+.geo-dd-item:last-child { border-bottom: none; }
+.geo-dd-item:hover { background: rgba(16,185,129,.07); color: var(--color-accent); }
+
+/* Errore / azioni */
+.search-error {
+    background: rgba(239,68,68,.07);
+    border: 1px solid rgba(239,68,68,.25);
+    color: #EF4444;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.search-filters-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ── Stato iniziale / vuoto ── */
+.search-prompt {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--color-text-muted);
+    font-size: 15px;
+}
+.search-no-results {
+    text-align: center;
+    padding: 56px 24px;
+}
+.search-no-results strong {
+    display: block;
+    font-size: 18px;
+    color: var(--color-text-primary);
+    margin-bottom: 10px;
+}
+.search-no-results p {
+    font-size: 14px;
+    color: var(--color-text-muted);
+    margin-bottom: 24px;
+    line-height: 1.65;
+}
+
+/* ── Header risultati ── */
+.search-results-header {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+/* ── Card risultato passaggio ── */
+.rides-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ride-result-card {
+    display: flex;
+    align-items: stretch;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: border-color .18s, box-shadow .18s;
+}
+.ride-result-card:hover {
+    border-color: rgba(16,185,129,.3);
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+}
+
+/* Striscia verde sinistra */
+.rrc-left {
+    flex: 1;
+    padding: 22px 24px;
+    border-right: 1px solid var(--color-border);
+    min-width: 0;
+}
+
+.rrc-event {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.rrc-details {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.rrc-departure {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-bottom: 8px;
+}
+.rrc-departure strong { color: var(--color-text-primary); }
+.rrc-note {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    font-style: italic;
+    margin-top: 4px;
+}
+
+/* Colonna destra */
+.rrc-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 24px;
+    gap: 16px;
+    min-width: 200px;
+}
+
+.rrc-driver {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+.rrc-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-border);
+}
+.rrc-avatar-init {
+    background: rgba(16,185,129,.12);
+    color: var(--color-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700;
+}
+.rrc-driver-name {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+/* Statistiche numeriche */
+.rrc-meta {
+    display: flex;
+    gap: 16px;
+}
+.rrc-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+.rrc-stat-val {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1;
+}
+.rrc-stat-lbl {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.rrc-cta {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 16px;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* ══ RESPONSIVE ══════════════════════════════ */
+@media (max-width: 900px) {
+    .search-filters-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+    .search-filters { padding: 20px 18px; }
+    .search-filters-grid { grid-template-columns: 1fr; gap: 14px; }
+    .ride-result-card { flex-direction: column; }
+    .rrc-left { border-right: none; border-bottom: 1px solid var(--color-border); padding: 18px 18px 14px; }
+    .rrc-right { flex-direction: row; flex-wrap: wrap; justify-content: space-between; padding: 14px 18px 18px; min-width: 0; gap: 12px; }
+    .rrc-driver { flex-direction: row; }
+    .rrc-cta { width: auto; flex: 1; min-width: 120px; }
+    .search-filters-actions { flex-direction: column; }
+    .search-filters-actions .btn-primary,
+    .search-filters-actions .btn-secondary { width: 100%; justify-content: center; }
+}
