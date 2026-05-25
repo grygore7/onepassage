@@ -1,188 +1,114 @@
 <?php
+/**
+ * sso_callback.php — Google Sign-In OAuth2
+ *
+ * ── SETUP (una volta sola) ───────────────────────────────────
+ * 1. Vai su console.cloud.google.com → APIs & Services → Credentials
+ * 2. Crea "OAuth 2.0 Client ID" (tipo: Web application)
+ * 3. In "Authorized redirect URIs" aggiungi ESATTAMENTE:
+ *      https://onepassage.cloud/sso_callback.php?provider=google
+ * 4. Su Render → Environment → aggiungi:
+ *      GOOGLE_CLIENT_ID     = xxxx.apps.googleusercontent.com
+ *      GOOGLE_CLIENT_SECRET = xxxx
+ *      GOOGLE_REDIRECT_URI  = https://onepassage.cloud/sso_callback.php?provider=google
+ *
+ * NOTA: il redirect_uri deve essere identico carattere per carattere
+ * a quello registrato su Google — anche una / finale in più causa 400.
+ */
 
 require_once 'config.php';
 
 $provider = $_GET['provider'] ?? '';
 
-// ═══════════════════════════════════════════════════════════════
-// GOOGLE
-// ═══════════════════════════════════════════════════════════════
-if ($provider === 'google') {
+if ($provider !== 'google') {
+    header('Location: auth.php'); exit;
+}
 
-    $clientId     = getenv('GOOGLE_CLIENT_ID')     ?: 'TUO_GOOGLE_CLIENT_ID';
-    $clientSecret = getenv('GOOGLE_CLIENT_SECRET') ?: 'TUO_GOOGLE_CLIENT_SECRET';
-    
-    // Rimuove gli slash finali da dirname per evitare il doppio slash //
-    $folder = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
-    
-    $redirectUri  = (isset($_SERVER['HTTPS']) ? 'https' : 'http')
-                    . '://' . $_SERVER['HTTP_HOST']
-                    . $folder
-                    . '/sso_callback.php?provider=google';
+// ── Configurazione ────────────────────────────────────────────
+$clientId     = getenv('GOOGLE_CLIENT_ID')     ?: '';
+$clientSecret = getenv('GOOGLE_CLIENT_SECRET') ?: '';
+// URI deve corrispondere ESATTAMENTE a quello su Google Console
+$redirectUri  = getenv('GOOGLE_REDIRECT_URI')
+    ?: 'https://onepassage.cloud/sso_callback.php?provider=google';
 
-    // Step 1: redirect verso Google se non c'è ?code
-    if (!isset($_GET['code'])) {
-        $params = http_build_query([
-            'client_id'     => $clientId,
-            'redirect_uri'  => $redirectUri,
-            'response_type' => 'code',
-            'scope'         => 'openid email profile',
-            'prompt'        => 'select_account',
-        ]);
-        header('Location: https://accounts.google.com/o/oauth2/auth?' . $params);
-        exit;
-    }
+if (!$clientId || !$clientSecret) {
+    die('SSO non configurato. Imposta GOOGLE_CLIENT_ID e GOOGLE_CLIENT_SECRET su Render.');
+}
 
-    // Step 2: scambia il code per un access_token
-    $tokenResp = httpPost('https://oauth2.googleapis.com/token', [
-        'code'          => $_GET['code'],
+// ── Step 1: nessun ?code → redirect a Google ─────────────────
+if (!isset($_GET['code'])) {
+    $url = 'https://accounts.google.com/o/oauth2/auth?' . http_build_query([
         'client_id'     => $clientId,
-        'client_secret' => $clientSecret,
         'redirect_uri'  => $redirectUri,
-        'grant_type'    => 'authorization_code',
+        'response_type' => 'code',
+        'scope'         => 'openid email profile',
+        'prompt'        => 'select_account',
     ]);
-    $tokenData = json_decode($tokenResp, true);
-    if (empty($tokenData['id_token'])) {
-        die('Errore Google SSO: token non ricevuto.');
-    }
-
-    // Step 3: decodifica il JWT id_token (senza verifica firma — affidabile perché arriva da Google TLS)
-    $payload = jwtDecode($tokenData['id_token']);
-    if (!$payload || empty($payload['sub'])) {
-        die('Errore Google SSO: payload non valido.');
-    }
-
-    $googleId = $payload['sub'];
-    $email    = $payload['email']      ?? '';
-    $nome     = $payload['given_name'] ?? '';
-    $cognome  = $payload['family_name'] ?? '';
-
-    gestisciSSOLogin($pdo, 'google', $googleId, $email, $nome, $cognome);
+    header('Location: ' . $url); exit;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// APPLE
-// ═══════════════════════════════════════════════════════════════
-// elseif ($provider === 'apple') {
+// ── Step 2: scambia code per token ───────────────────────────
+$tokenResp = httpPost('https://oauth2.googleapis.com/token', [
+    'code'          => $_GET['code'],
+    'client_id'     => $clientId,
+    'client_secret' => $clientSecret,
+    'redirect_uri'  => $redirectUri,
+    'grant_type'    => 'authorization_code',
+]);
+$tokenData = json_decode($tokenResp, true);
 
-  //  $clientId = getenv('APPLE_CLIENT_ID') ?: 'TUO_APPLE_SERVICE_ID';
- //   $redirectUri = (isset($_SERVER['HTTPS']) ? 'https' : 'http')
-//                    . '://' . $_SERVER['HTTP_HOST']
-  //                  . dirname($_SERVER['SCRIPT_NAME'])
-  //                  . '/sso_callback.php?provider=apple';
-
-    // Step 1: redirect verso Apple se non c'è ?code
-  //  if (!isset($_POST['code'])) {
-   //     $params = http_build_query([
-   //         'client_id'     => $clientId,
-   //         'redirect_uri'  => $redirectUri,
-    //        'response_type' => 'code id_token',
-    //        'scope'         => 'name email',
-    //        'response_mode' => 'form_post',
-     //   ]);
-     //   header('Location: https://appleid.apple.com/auth/authorize?' . $params);
-   //     exit;
-  //  }
-
-    // Apple invia il codice via POST
- //   $code = $_POST['code'] ?? '';
-  //  if (!$code) die('Errore Apple SSO: codice mancante.');
-
-  //  $clientSecret = appleClientSecret();
- //   $tokenResp    = httpPost('https://appleid.apple.com/auth/token', [
-  //      'client_id'     => $clientId,
- //       'client_secret' => $clientSecret,
-  //      'code'          => $code,
-  //      'grant_type'    => 'authorization_code',
-  //      'redirect_uri'  => $redirectUri,
-  //  ]);
-  //  $tokenData = json_decode($tokenResp, true);
-  //  if (empty($tokenData['id_token'])) {
-  //      die('Errore Apple SSO: token non ricevuto.');
-  //  }
-
-  //  $payload = jwtDecode($tokenData['id_token']);
-  //  if (!$payload || empty($payload['sub'])) {
- //       die('Errore Apple SSO: payload non valido.');
-  //  }
-
-   // $appleId = $payload['sub'];
-  //  $email   = $payload['email'] ?? '';
-    // Apple invia il nome solo al primo login via POST
- //   $nameObj = json_decode($_POST['user'] ?? '{}', true);
- //   $nome    = $nameObj['name']['firstName'] ?? '';
- //   $cognome = $nameObj['name']['lastName']  ?? '';
-
-  //  gestisciSSOLogin($pdo, 'apple', $appleId, $email, $nome, $cognome);
-//}
-
-else {
-    header('Location: auth.php');
-    exit;
+if (empty($tokenData['id_token'])) {
+    error_log('[SSO] Token error: ' . $tokenResp);
+    header('Location: auth.php?sso_error=1'); exit;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// LOGICA CONDIVISA
-// ═══════════════════════════════════════════════════════════════
+// ── Step 3: decodifica il JWT id_token ───────────────────────
+$payload = jwtDecode($tokenData['id_token']);
+if (!$payload || empty($payload['sub'])) {
+    header('Location: auth.php?sso_error=1'); exit;
+}
 
-/**
- * Login o registrazione tramite SSO.
- * - Se esiste già per provider_id → login diretto
- * - Se esiste per email → collega il provider e fa login
- * - Altrimenti → crea nuovo utente con email_verificata=1 (niente OTP)
- */
-function gestisciSSOLogin(PDO $pdo, string $provider, string $providerId,
-                           string $email, string $nome, string $cognome): void
-{
-    $col = $provider === 'google' ? 'google_id' : 'apple_id';
+$googleId = $payload['sub'];
+$email    = $payload['email']       ?? '';
+$nome     = $payload['given_name']  ?? 'Utente';
+$cognome  = $payload['family_name'] ?? '';
 
-    // 1. Cerca per provider ID
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE $col = ?");
-    $stmt->execute([$providerId]);
+// ── Step 4: login o registrazione ────────────────────────────
+// 1. Cerca per google_id (già registrato con Google)
+$stmt = $pdo->prepare('SELECT * FROM users WHERE google_id = ? LIMIT 1');
+$stmt->execute([$googleId]);
+$user = $stmt->fetch();
+
+if (!$user && $email) {
+    // 2. Cerca per email (account preesistente — collega Google)
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ? LIMIT 1');
+    $stmt->execute([$email]);
     $user = $stmt->fetch();
-
-    if (!$user && $email) {
-        // 2. Cerca per email (collega il provider)
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
-        if ($user) {
-            $pdo->prepare("UPDATE users SET $col = ? WHERE id = ?")
-                ->execute([$providerId, $user['id']]);
-        }
+    if ($user) {
+        $pdo->prepare('UPDATE users SET google_id = ? WHERE id = ?')->execute([$googleId, $user['id']]);
     }
-
-    if (!$user) {
-        // 3. Crea nuovo utente SSO (email già verificata)
-        if (!$email) {
-            // Apple può non fornire l'email dopo il primo accesso
-            $email = $provider . '_' . substr($providerId, 0, 8) . '@onepassage.local';
-        }
-        $pdo->prepare("INSERT INTO users (nome, cognome, email, password_hash, email_verificata, $col)
-                        VALUES (?, ?, ?, '', 1, ?)")
-            ->execute([
-                $nome    ?: ucfirst($provider) . 'User',
-                $cognome ?: '',
-                $email,
-                $providerId,
-            ]);
-        $userId = (int)$pdo->lastInsertId();
-        $user   = $pdo->prepare("SELECT * FROM users WHERE id = ?");
-        $user->execute([$userId]);
-        $user = $user->fetch();
-    }
-
-    // Avvia sessione
-    $_SESSION['user_id']      = $user['id'];
-    $_SESSION['user_nome']    = $user['nome'];
-    $_SESSION['user_cognome'] = $user['cognome'];
-    $_SESSION['user_email']   = $user['email'];
-    header('Location: dashboard.php');
-    exit;
 }
+
+if (!$user) {
+    // 3. Crea nuovo account (email già verificata tramite Google)
+    $pdo->prepare('INSERT INTO users (nome, cognome, email, password_hash, email_verificata, google_id) VALUES (?, ?, ?, \'\', 1, ?)')
+        ->execute([$nome, $cognome, $email ?: $googleId . '@google.onepassage.cloud', $googleId]);
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE google_id = ? LIMIT 1');
+    $stmt->execute([$googleId]);
+    $user = $stmt->fetch();
+}
+
+if (!$user) {
+    header('Location: auth.php?sso_error=1'); exit;
+}
+
+$_SESSION['user_id']      = $user['id'];
+$_SESSION['user_nome']    = $user['nome'];
+$_SESSION['user_cognome'] = $user['cognome'];
+$_SESSION['user_email']   = $user['email'];
+header('Location: dashboard.php'); exit;
 
 // ── Helpers ───────────────────────────────────────────────────
-
 function httpPost(string $url, array $data): string {
     $ch = curl_init($url);
     curl_setopt_array($ch, [
@@ -193,47 +119,17 @@ function httpPost(string $url, array $data): string {
         CURLOPT_SSL_VERIFYPEER => true,
         CURLOPT_HTTPHEADER     => ['Content-Type: application/x-www-form-urlencoded'],
     ]);
-    $res = curl_exec($ch);
+    $r = curl_exec($ch);
+    if ($r === false) error_log('[SSO] cURL: ' . curl_error($ch));
     curl_close($ch);
-    return $res ?: '';
+    return $r ?: '';
 }
 
-/** Decode JWT payload (no signature verification — solo per uso interno) */
 function jwtDecode(string $jwt): ?array {
     $parts = explode('.', $jwt);
     if (count($parts) < 2) return null;
-    $payload = $parts[1];
-    $payload = str_replace(['-', '_'], ['+', '/'], $payload);
-    $payload = base64_decode($payload . str_repeat('=', 4 - strlen($payload) % 4));
-    return json_decode($payload, true) ?: null;
-}
-
-/**
- * Genera il client_secret JWT per Apple (ES256, valido 6 mesi).
- * Richiede: APPLE_TEAM_ID, APPLE_KEY_ID, APPLE_CLIENT_ID, APPLE_PRIVATE_KEY
- */
-function appleClientSecret(): string {
-    $teamId    = getenv('APPLE_TEAM_ID')    ?: '';
-    $keyId     = getenv('APPLE_KEY_ID')     ?: '';
-    $clientId  = getenv('APPLE_CLIENT_ID')  ?: '';
-    $privateKey= getenv('APPLE_PRIVATE_KEY') ?: '';
-
-    $header  = base64UrlEncode(json_encode(['alg'=>'ES256','kid'=>$keyId]));
-    $now     = time();
-    $payload = base64UrlEncode(json_encode([
-        'iss' => $teamId,
-        'iat' => $now,
-        'exp' => $now + 15776999, // ~6 mesi
-        'aud' => 'https://appleid.apple.com',
-        'sub' => $clientId,
-    ]));
-    $data = $header . '.' . $payload;
-
-    $key = openssl_pkey_get_private(str_replace('\\n', "\n", $privateKey));
-    openssl_sign($data, $signature, $key, OPENSSL_ALGO_SHA256);
-    return $data . '.' . base64UrlEncode($signature);
-}
-
-function base64UrlEncode(string $data): string {
-    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    $b64 = str_replace(['-','_'],['+','/'], $parts[1]);
+    $b64 .= str_repeat('=', (4 - strlen($b64) % 4) % 4);
+    $json = base64_decode($b64);
+    return $json ? json_decode($json, true) : null;
 }
