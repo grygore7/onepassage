@@ -21,7 +21,7 @@ $stepOTP = false;
 $otpUserId = null;
 
 // ── Step 2: Verifica OTP ──────────────────────────────────────
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify_otp'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['verify_otp']) || isset($_POST['otp_codice']))) {
     $userId = (int)($_POST['otp_user_id'] ?? 0);
     $codice = trim($_POST['otp_codice'] ?? '');
     if ($userId && $codice) {
