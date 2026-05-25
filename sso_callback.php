@@ -23,9 +23,13 @@ if ($provider === 'google') {
 
     $clientId     = getenv('GOOGLE_CLIENT_ID')     ?: 'TUO_GOOGLE_CLIENT_ID';
     $clientSecret = getenv('GOOGLE_CLIENT_SECRET') ?: 'TUO_GOOGLE_CLIENT_SECRET';
+    
+    // Rimuove gli slash finali da dirname per evitare il doppio slash //
+    $folder = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+    
     $redirectUri  = (isset($_SERVER['HTTPS']) ? 'https' : 'http')
                     . '://' . $_SERVER['HTTP_HOST']
-                    . dirname($_SERVER['SCRIPT_NAME'])
+                    . $folder
                     . '/sso_callback.php?provider=google';
 
     // Step 1: redirect verso Google se non c'è ?code
