@@ -177,7 +177,7 @@ function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string 
             <strong>{$nomePasseggero}</strong> ha richiesto un posto per
             <strong>{$nomeEvento}</strong>.
         </p>
-        <a href='https://onepassage.cloud/dashboard.php'
+        <a href='https://www.onepassage.cloud/dashboard.php'
            style='display:block;background:#10B981;color:#fff;padding:14px 24px;
                   border-radius:12px;text-decoration:none;font-weight:600;
                   text-align:center;margin:0 0 24px;'>
@@ -204,7 +204,7 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
             La tua richiesta per <strong>{$nomeEvento}</strong> è stata <strong>{$stato}</strong>.
         </p>
         <p style='color:#64748b;margin:0 0 24px;'>{$msg}</p>
-        <a href='https://onepassage.cloud/dashboard.php'
+        <a href='https://www.onepassage.cloud/dashboard.php'
            style='display:block;background:{$colore};color:#fff;padding:14px 24px;
                   border-radius:12px;text-decoration:none;font-weight:600;
                   text-align:center;margin:0 0 24px;'>
@@ -229,7 +229,7 @@ function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $st
         <div style='font-size:32px;color:#F59E0B;margin:0 0 24px;letter-spacing:4px;'>
             {$starsHtml}
         </div>
-        <a href='https://onepassage.cloud/profilo.php'
+        <a href='https://www.onepassage.cloud/profilo.php'
            style='display:block;background:#10B981;color:#fff;padding:14px 24px;
                   border-radius:12px;text-decoration:none;font-weight:600;
                   text-align:center;margin:0 0 24px;'>
