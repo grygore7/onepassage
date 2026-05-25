@@ -33,6 +33,9 @@ if (isset($_GET['cerca'])) {
             ':lon'    => $userLon,
             ':raggio' => $raggio,
         ];
+        if (isLoggedIn()) {
+            $params[':self_id'] = $_SESSION['user_id'];
+        }
 
         if ($q !== '') {
             $where .= " AND e.nome_evento LIKE :q";
