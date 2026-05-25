@@ -1,16 +1,4 @@
 <?php
-/**
-
- * ── SETUP GOOGLE ─────────────────────────────────────────────
- * 1. Vai su https://console.cloud.google.com
- * 2. Crea un progetto → API & Services → Credentials
- * 3. Crea "OAuth 2.0 Client ID" (tipo: Web application)
- * 4. Aggiungi in "Authorized redirect URIs":
- *      https://tuodominio.it/sso_callback.php?provider=google
- * 5. Su Railway → Settings → Variables aggiungi:
- *      GOOGLE_CLIENT_ID=xxxx.apps.googleusercontent.com
- *      GOOGLE_CLIENT_SECRET=xxxx
- */
 
 require_once 'config.php';
 
@@ -75,58 +63,58 @@ if ($provider === 'google') {
 // ═══════════════════════════════════════════════════════════════
 // APPLE
 // ═══════════════════════════════════════════════════════════════
-elseif ($provider === 'apple') {
+// elseif ($provider === 'apple') {
 
-    $clientId = getenv('APPLE_CLIENT_ID') ?: 'TUO_APPLE_SERVICE_ID';
-    $redirectUri = (isset($_SERVER['HTTPS']) ? 'https' : 'http')
-                    . '://' . $_SERVER['HTTP_HOST']
-                    . dirname($_SERVER['SCRIPT_NAME'])
-                    . '/sso_callback.php?provider=apple';
+  //  $clientId = getenv('APPLE_CLIENT_ID') ?: 'TUO_APPLE_SERVICE_ID';
+ //   $redirectUri = (isset($_SERVER['HTTPS']) ? 'https' : 'http')
+//                    . '://' . $_SERVER['HTTP_HOST']
+  //                  . dirname($_SERVER['SCRIPT_NAME'])
+  //                  . '/sso_callback.php?provider=apple';
 
     // Step 1: redirect verso Apple se non c'è ?code
-    if (!isset($_POST['code'])) {
-        $params = http_build_query([
-            'client_id'     => $clientId,
-            'redirect_uri'  => $redirectUri,
-            'response_type' => 'code id_token',
-            'scope'         => 'name email',
-            'response_mode' => 'form_post',
-        ]);
-        header('Location: https://appleid.apple.com/auth/authorize?' . $params);
-        exit;
-    }
+  //  if (!isset($_POST['code'])) {
+   //     $params = http_build_query([
+   //         'client_id'     => $clientId,
+   //         'redirect_uri'  => $redirectUri,
+    //        'response_type' => 'code id_token',
+    //        'scope'         => 'name email',
+    //        'response_mode' => 'form_post',
+     //   ]);
+     //   header('Location: https://appleid.apple.com/auth/authorize?' . $params);
+   //     exit;
+  //  }
 
     // Apple invia il codice via POST
-    $code = $_POST['code'] ?? '';
-    if (!$code) die('Errore Apple SSO: codice mancante.');
+ //   $code = $_POST['code'] ?? '';
+  //  if (!$code) die('Errore Apple SSO: codice mancante.');
 
-    $clientSecret = appleClientSecret();
-    $tokenResp    = httpPost('https://appleid.apple.com/auth/token', [
-        'client_id'     => $clientId,
-        'client_secret' => $clientSecret,
-        'code'          => $code,
-        'grant_type'    => 'authorization_code',
-        'redirect_uri'  => $redirectUri,
-    ]);
-    $tokenData = json_decode($tokenResp, true);
-    if (empty($tokenData['id_token'])) {
-        die('Errore Apple SSO: token non ricevuto.');
-    }
+  //  $clientSecret = appleClientSecret();
+ //   $tokenResp    = httpPost('https://appleid.apple.com/auth/token', [
+  //      'client_id'     => $clientId,
+ //       'client_secret' => $clientSecret,
+  //      'code'          => $code,
+  //      'grant_type'    => 'authorization_code',
+  //      'redirect_uri'  => $redirectUri,
+  //  ]);
+  //  $tokenData = json_decode($tokenResp, true);
+  //  if (empty($tokenData['id_token'])) {
+  //      die('Errore Apple SSO: token non ricevuto.');
+  //  }
 
-    $payload = jwtDecode($tokenData['id_token']);
-    if (!$payload || empty($payload['sub'])) {
-        die('Errore Apple SSO: payload non valido.');
-    }
+  //  $payload = jwtDecode($tokenData['id_token']);
+  //  if (!$payload || empty($payload['sub'])) {
+ //       die('Errore Apple SSO: payload non valido.');
+  //  }
 
-    $appleId = $payload['sub'];
-    $email   = $payload['email'] ?? '';
+   // $appleId = $payload['sub'];
+  //  $email   = $payload['email'] ?? '';
     // Apple invia il nome solo al primo login via POST
-    $nameObj = json_decode($_POST['user'] ?? '{}', true);
-    $nome    = $nameObj['name']['firstName'] ?? '';
-    $cognome = $nameObj['name']['lastName']  ?? '';
+ //   $nameObj = json_decode($_POST['user'] ?? '{}', true);
+ //   $nome    = $nameObj['name']['firstName'] ?? '';
+ //   $cognome = $nameObj['name']['lastName']  ?? '';
 
-    gestisciSSOLogin($pdo, 'apple', $appleId, $email, $nome, $cognome);
-}
+  //  gestisciSSOLogin($pdo, 'apple', $appleId, $email, $nome, $cognome);
+//}
 
 else {
     header('Location: auth.php');
