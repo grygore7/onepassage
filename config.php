@@ -93,7 +93,7 @@ function verificaOTP(PDO $pdo, int $userId, string $codice): bool {
 //
 // Mittente aggiornato per l'utilizzo del terzo livello validato su Aruba
 define('RESEND_API_KEY', getenv('RESEND_API_KEY') ?: '');
-define('RESEND_FROM',    getenv('RESEND_FROM')    ?: 'OnePassage <noreply@send.onepassage.cloud>');
+define('RESEND_FROM',    getenv('RESEND_FROM')    ?: 'OnePassage <noreply@onepassage.cloud>');
  
 function inviaEmail(string $to, string $toName, string $subject, string $htmlBody): bool {
     $apiKey = RESEND_API_KEY;
