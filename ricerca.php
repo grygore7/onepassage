@@ -5,36 +5,51 @@ $hasSearch = false;
 $risultati = [];
 $errore    = '';
 
-// Parametri filtro
-$q       = trim($_GET['q']       ?? '');
-$luogo   = trim($_GET['luogo']   ?? '');
-$data    = trim($_GET['data']    ?? '');
-$raggio  = isset($_GET['raggio']) ? max(5, min(500, (int)$_GET['raggio'])) : 30;
-$userLat = isset($_GET['ulat']) && $_GET['ulat'] !== '' ? (float)$_GET['ulat'] : null;
-$userLon = isset($_GET['ulon']) && $_GET['ulon'] !== '' ? (float)$_GET['ulon'] : null;
+// ── Parametri ─────────────────────────────────────────────────
+$q       = trim($_GET['q']    ?? '');
+$data    = trim($_GET['data'] ?? '');
+$raggio  = isset($_GET['raggio']) ? max(5, min(300, (int)$_GET['raggio'])) : 30;
+$userLat = (isset($_GET['ulat']) && $_GET['ulat'] !== '') ? (float)$_GET['ulat'] : null;
+$userLon = (isset($_GET['ulon']) && $_GET['ulon'] !== '') ? (float)$_GET['ulon'] : null;
+$luogoNome = trim($_GET['luogo'] ?? '');
 
-// Esegui ricerca solo se l'utente ha inviato il form
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && (
-    $q !== '' || $luogo !== '' || $data !== '' || $userLat !== null
-)) {
-    $hasSearch = true;
+// ── Esegui ricerca solo se il form è stato inviato ────────────
+if (isset($_GET['cerca'])) {
 
-    if ($userLat !== null && $userLon !== null) {
-        // ── Ricerca geospaziale: Haversine in SQL ────────────────
-        // Distanza dal punto di partenza dell'autista (lat/lon_partenza in ride_offers)
-        // verso la posizione dell'utente passeggero.
-        // Formula: 6371 * 2 * ASIN(SQRT(POW(SIN((lat2-lat1)*PI()/360),2)
-        //          + COS(lat1*PI()/180)*COS(lat2*PI()/180)*POW(SIN((lon2-lon1)*PI()/360),2)))
+    // Validazione: la località di partenza è obbligatoria
+    // (serve per il calcolo della distanza — senza di essa la ricerca non ha senso)
+    if ($userLat === null || $userLon === null) {
+        $errore = 'Inserisci la tua città di partenza per trovare passaggi vicini a te.';
+    } else {
+        $hasSearch = true;
+
+        // ── Query con Haversine in SQL ────────────────────────
+        // IMPORTANTE: tutti i parametri sono named (:nome) per evitare
+        // il conflitto HY093 tra named e positional params nello stesso statement.
+        $where  = "WHERE e.approvato = 1 AND e.data_evento >= NOW() AND ro.posti_disponibili > 0";
+        $params = [
+            ':lat'    => $userLat,
+            ':lat2'   => $userLat,   // PDO non permette di riusare lo stesso named param
+            ':lon'    => $userLon,
+            ':raggio' => $raggio,
+        ];
+
+        if ($q !== '') {
+            $where .= " AND e.nome_evento LIKE :q";
+            $params[':q'] = "%$q%";
+        }
+        if ($data !== '') {
+            $where .= " AND DATE(e.data_evento) = :data";
+            $params[':data'] = $data;
+        }
+
         $sql = "
             SELECT
-                e.id            AS event_id,
+                e.id                AS event_id,
                 e.nome_evento,
                 e.luogo,
                 e.data_evento,
-                e.latitudine    AS lat_evento,
-                e.longitudine   AS lon_evento,
-                ro.id           AS offer_id,
-                ro.user_id      AS driver_id,
+                ro.id               AS offer_id,
                 ro.punto_partenza,
                 ro.latitudine_partenza,
                 ro.longitudine_partenza,
@@ -42,86 +57,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && (
                 ro.prezzo_per_posto,
                 ro.note,
                 CONCAT(u.nome, ' ', LEFT(u.cognome,1), '.') AS driver_nome,
-                u.foto_profilo  AS driver_foto,
+                u.foto_profilo      AS driver_foto,
+                u.id                AS driver_id,
                 ROUND(
                     6371 * 2 * ASIN(SQRT(
                         POW(SIN((ro.latitudine_partenza - :lat) * PI() / 360), 2)
-                        + COS(:lat * PI()/180) * COS(ro.latitudine_partenza * PI()/180)
+                        + COS(:lat2 * PI()/180)
+                        * COS(ro.latitudine_partenza * PI()/180)
                         * POW(SIN((ro.longitudine_partenza - :lon) * PI() / 360), 2)
                     )), 1
                 ) AS distanza_km
             FROM ride_offers ro
-            JOIN events e  ON e.id  = ro.event_id
-            JOIN users  u  ON u.id  = ro.user_id
-            WHERE e.approvato = 1
-              AND e.data_evento >= NOW()
-              AND ro.posti_disponibili > 0
-        ";
-        $params = [':lat' => $userLat, ':lon' => $userLon];
-
-        if ($q) {
-            $sql .= " AND (e.nome_evento LIKE :q OR e.luogo LIKE :q2)";
-            $params[':q']  = "%$q%";
-            $params[':q2'] = "%$q%";
-        }
-        if ($data) {
-            $sql .= " AND DATE(e.data_evento) = :data";
-            $params[':data'] = $data;
-        }
-
-        $sql .= "
+            JOIN events e ON e.id  = ro.event_id
+            JOIN users  u ON u.id  = ro.user_id
+            $where
             HAVING distanza_km <= :raggio
             ORDER BY distanza_km ASC
         ";
-        $params[':raggio'] = $raggio;
 
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        $risultati = $stmt->fetchAll();
-
-    } else {
-        // ── Ricerca testuale (senza coordinate) ──────────────────
-        $sql = "
-            SELECT
-                e.id            AS event_id,
-                e.nome_evento,
-                e.luogo,
-                e.data_evento,
-                ro.id           AS offer_id,
-                ro.user_id      AS driver_id,
-                ro.punto_partenza,
-                ro.posti_disponibili,
-                ro.prezzo_per_posto,
-                ro.note,
-                CONCAT(u.nome, ' ', LEFT(u.cognome,1), '.') AS driver_nome,
-                u.foto_profilo  AS driver_foto,
-                NULL            AS distanza_km
-            FROM ride_offers ro
-            JOIN events e  ON e.id  = ro.event_id
-            JOIN users  u  ON u.id  = ro.user_id
-            WHERE e.approvato = 1
-              AND e.data_evento >= NOW()
-              AND ro.posti_disponibili > 0
-        ";
-        $params = [];
-
-        if ($q) {
-            $sql .= " AND (e.nome_evento LIKE ? OR e.luogo LIKE ?)";
-            $params[] = "%$q%"; $params[] = "%$q%";
+        try {
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            $risultati = $stmt->fetchAll();
+        } catch (PDOException $e) {
+            $errore = 'Errore nella ricerca. Riprova tra qualche momento.';
+            error_log('[OnePassage Ricerca] ' . $e->getMessage());
         }
-        if ($luogo) {
-            $sql .= " AND ro.punto_partenza LIKE ?";
-            $params[] = "%$luogo%";
-        }
-        if ($data) {
-            $sql .= " AND DATE(e.data_evento) = ?";
-            $params[] = $data;
-        }
-
-        $sql .= " ORDER BY e.data_evento ASC";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        $risultati = $stmt->fetchAll();
     }
 }
 ?>
@@ -134,7 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && (
     <script>(function(){var t=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',t);})();</script>
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/ricerca.css">
-    <link rel="stylesheet" href="css/ricerca_extra.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -143,148 +103,158 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && (
 <?php include 'header_snippet.php'; ?>
 
 <main class="section-md">
-<div class="container">
+<div class="container" style="max-width:900px;">
 
-    <div class="page-intro">
-        <h1><i class="fas fa-search" style="color:var(--color-accent);"></i> Trova un passaggio</h1>
-        <p>Cerca un accompagnatore che parte vicino a te per lo stesso evento.</p>
+    <div class="search-page-header">
+        <h1>Cerca un passaggio</h1>
+        <p>Trova chi parte dalla tua zona per lo stesso evento.</p>
     </div>
 
     <!-- ── Filtri ── -->
-    <div class="card filters-card" style="margin-bottom:28px;">
+    <div class="search-filters">
         <form method="get" id="searchForm">
-            <div class="filters-grid">
-                <div class="form-group">
-                    <label for="q"><i class="fas fa-music"></i> Nome evento</label>
-                    <input type="text" id="q" name="q" value="<?= h($q) ?>"
-                           placeholder="Es: Vasco Rossi, Milano...">
+            <input type="hidden" name="cerca" value="1">
+
+            <div class="search-filters-grid">
+                <!-- Evento -->
+                <div class="search-filter-field">
+                    <label for="q">Evento</label>
+                    <input type="text" id="q" name="q"
+                           value="<?= h($q) ?>"
+                           placeholder="Nome evento, artista...">
                 </div>
-                <div class="form-group">
-                    <label for="luogo_input"><i class="fas fa-map-marker-alt"></i> Tua località di partenza</label>
-                    <div class="autocomplete-wrapper">
-                        <input type="text" id="luogo_input" name="luogo" value="<?= h($luogo) ?>"
-                               placeholder="Inserisci il tuo comune..." autocomplete="off"
-                               oninput="searchLuogo(this.value)">
-                        <button type="button" class="geo-search-btn" onclick="gpsRicerca()" title="Usa GPS">
-                            <i class="fas fa-location-arrow"></i>
+
+                <!-- Città di partenza — OBBLIGATORIO -->
+                <div class="search-filter-field">
+                    <label for="luogo_input">
+                        La tua città di partenza
+                        <span class="required-mark">*</span>
+                    </label>
+                    <div class="geo-field-wrap">
+                        <input type="text" id="luogo_input" name="luogo"
+                               value="<?= h($luogoNome) ?>"
+                               placeholder="Es. Milano, Torino..."
+                               autocomplete="off"
+                               oninput="searchLuogo(this.value)"
+                               required>
+                        <button type="button" class="geo-btn" onclick="gpsRicerca()"
+                                title="Usa la mia posizione">
+                            <i class="fas fa-location-crosshairs"></i>
                         </button>
-                        <div class="autocomplete-dropdown" id="luogoDropdown" style="display:none;"></div>
+                        <div class="geo-dropdown" id="luogoDropdown"></div>
                     </div>
-                    <input type="hidden" name="ulat" id="ulat" value="<?= $userLat ?? '' ?>">
-                    <input type="hidden" name="ulon" id="ulon" value="<?= $userLon ?? '' ?>">
+                    <input type="hidden" name="ulat" id="ulat" value="<?= h((string)($userLat ?? '')) ?>">
+                    <input type="hidden" name="ulon" id="ulon" value="<?= h((string)($userLon ?? '')) ?>">
                 </div>
-                <div class="form-group">
-                    <label for="data"><i class="fas fa-calendar"></i> Data</label>
-                    <input type="date" id="data" name="data" value="<?= h($data) ?>"
+
+                <!-- Data -->
+                <div class="search-filter-field">
+                    <label for="data">Data</label>
+                    <input type="date" id="data" name="data"
+                           value="<?= h($data) ?>"
                            min="<?= date('Y-m-d') ?>">
                 </div>
-                <div class="form-group">
+
+                <!-- Raggio -->
+                <div class="search-filter-field">
                     <label>
-                        <i class="fas fa-ruler-horizontal"></i>
-                        Raggio massimo: <strong id="raggioBadge"><?= $raggio ?> km</strong>
+                        Raggio di ricerca
+                        <strong id="raggioBadge"><?= $raggio ?> km</strong>
                     </label>
-                    <input type="range" name="raggio" id="raggiSlider"
+                    <input type="range" name="raggio" id="raggioSlider"
                            min="5" max="150" step="5" value="<?= $raggio ?>"
                            oninput="document.getElementById('raggioBadge').textContent=this.value+' km'">
                 </div>
             </div>
-            <div class="filter-actions">
+
+            <?php if ($errore): ?>
+            <div class="search-error">
+                <i class="fas fa-exclamation-circle"></i> <?= h($errore) ?>
+            </div>
+            <?php endif; ?>
+
+            <div class="search-filters-actions">
                 <button type="submit" class="btn-primary">
-                    <i class="fas fa-search"></i> Cerca passaggi
+                    Cerca passaggi
                 </button>
-                <a href="ricerca.php" class="btn-secondary">
-                    <i class="fas fa-times"></i> Azzera
-                </a>
+                <a href="ricerca.php" class="btn-secondary">Azzera filtri</a>
             </div>
         </form>
     </div>
 
     <!-- ── Risultati ── -->
-    <?php if (!$hasSearch): ?>
-        <div class="search-empty-state">
-            <div class="search-empty-icon"><i class="fas fa-car"></i></div>
-            <h3>Inserisci i filtri per trovare un passaggio</h3>
-            <p>Cerca per nome evento, la tua città di partenza o usa il GPS per trovare i passaggi più vicini a te.</p>
+    <?php if (!$hasSearch && !$errore): ?>
+        <div class="search-prompt">
+            <p>Inserisci la tua città di partenza per trovare passaggi disponibili.</p>
         </div>
 
-    <?php elseif (empty($risultati)): ?>
-        <div class="search-empty-state">
-            <div class="search-empty-icon"><i class="fas fa-map-marked-alt"></i></div>
-            <h3>Nessun accompagnatore disponibile</h3>
-            <p>Nessun accompagnatore disponibile nel raggio selezionato.<br>
+    <?php elseif ($hasSearch && empty($risultati)): ?>
+        <div class="search-no-results">
+            <strong>Nessun passaggio trovato</strong>
+            <p>Nessun accompagnatore disponibile nel raggio di <?= $raggio ?> km da <?= h($luogoNome ?: 'te') ?>.<br>
                Prova ad aumentare il raggio o a modificare i filtri.</p>
             <?php if (isLoggedIn()): ?>
-            <a href="offri_passaggio.php" class="btn-primary" style="margin-top:16px;">
-                <i class="fas fa-car"></i> Offri tu il passaggio
-            </a>
+            <a href="offri_passaggio.php" class="btn-primary">Offri tu il passaggio</a>
             <?php endif; ?>
         </div>
 
-    <?php else: ?>
-        <div class="results-header">
-            <span class="results-count">
-                <strong><?= count($risultati) ?></strong> passagg<?= count($risultati) == 1 ? 'io trovato' : 'i trovati' ?>
-                <?php if ($userLat !== null): ?>
-                — ordinati per distanza dal tuo punto di partenza
-                <?php endif; ?>
-            </span>
+    <?php elseif ($hasSearch): ?>
+        <div class="search-results-header">
+            <span><?= count($risultati) ?> passagg<?= count($risultati) == 1 ? 'io trovato' : 'i trovati' ?>
+                  entro <?= $raggio ?> km<?= $luogoNome ? ' da ' . h($luogoNome) : '' ?></span>
         </div>
 
-        <div class="rides-list">
+        <div class="rides-grid">
         <?php foreach ($risultati as $r):
-            $dataFmt = $r['data_evento']
-                ? (new DateTime($r['data_evento']))->format('d/m/Y H:i')
-                : 'Data da definire';
-            $prezzoFmt = $r['prezzo_per_posto'] > 0 ? '€ '.number_format($r['prezzo_per_posto'],2) : 'Gratuito';
-            $iniziali  = strtoupper(substr($r['driver_nome'], 0, 1));
+            $dt      = $r['data_evento'] ? new DateTime($r['data_evento']) : null;
+            $dataFmt = $dt ? $dt->format('d/m/Y') : '—';
+            $oraFmt  = $dt ? $dt->format('H:i')   : '';
+            $prezzo  = (float)$r['prezzo_per_posto'];
+            $initials = strtoupper(substr($r['driver_nome'], 0, 1));
         ?>
-        <div class="ride-card">
-            <div class="ride-card-accent"></div>
-            <div class="ride-card-body">
-                <div class="ride-card-top">
-                    <div class="ride-info">
-                        <div class="ride-event-name"><?= h($r['nome_evento']) ?></div>
-                        <div class="ride-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> <?= h($r['luogo'] ?? '') ?></span>
-                            <span><i class="fas fa-calendar"></i> <?= $dataFmt ?></span>
-                            <span><i class="fas fa-play-circle"></i> Parte da: <strong><?= h($r['punto_partenza']) ?></strong></span>
-                        </div>
-                    </div>
-                    <div class="ride-driver">
-                        <?php if ($r['driver_foto']): ?>
-                            <img src="uploads/<?= h($r['driver_foto']) ?>" class="driver-avatar" alt="">
-                        <?php else: ?>
-                            <div class="driver-avatar driver-avatar-initial"><?= $iniziali ?></div>
-                        <?php endif; ?>
-                        <span class="driver-name"><?= h($r['driver_nome']) ?></span>
-                    </div>
+        <div class="ride-result-card">
+            <div class="rrc-left">
+                <div class="rrc-event"><?= h($r['nome_evento']) ?></div>
+                <div class="rrc-details">
+                    <span><?= h($r['luogo'] ?? '') ?></span>
+                    <span><?= $dataFmt ?><?= $oraFmt ? ' · ' . $oraFmt : '' ?></span>
                 </div>
-                <div class="ride-card-bottom">
-                    <div class="ride-chips">
-                        <?php if ($r['distanza_km'] !== null): ?>
-                        <span class="dash-chip dash-chip--green">
-                            <i class="fas fa-route"></i> <?= $r['distanza_km'] ?> km da te
-                        </span>
-                        <?php endif; ?>
-                        <span class="dash-chip dash-chip--<?= $r['posti_disponibili'] > 1 ? 'blue' : 'amber' ?>">
-                            <i class="fas fa-user-friends"></i> <?= $r['posti_disponibili'] ?> posto<?= $r['posti_disponibili']>1?'i':'' ?>
-                        </span>
-                        <span class="dash-chip dash-chip--<?= $r['prezzo_per_posto'] > 0 ? 'amber' : 'green' ?>">
-                            <i class="fas fa-euro-sign"></i> <?= $prezzoFmt ?>
-                        </span>
-                    </div>
-                    <?php if (isLoggedIn()): ?>
-                    <a href="richiedi_passaggio.php?offer=<?= $r['offer_id'] ?>" class="btn-primary btn-sm">
-                        <i class="fas fa-hand-paper"></i> Richiedi
-                    </a>
-                    <?php else: ?>
-                    <a href="auth.php" class="btn-secondary btn-sm">
-                        <i class="fas fa-sign-in-alt"></i> Accedi per richiedere
-                    </a>
-                    <?php endif; ?>
+                <div class="rrc-departure">
+                    Partenza: <strong><?= h($r['punto_partenza']) ?></strong>
                 </div>
                 <?php if ($r['note']): ?>
-                <div class="ride-note"><i class="fas fa-sticky-note"></i> <?= h($r['note']) ?></div>
+                <div class="rrc-note"><?= h($r['note']) ?></div>
+                <?php endif; ?>
+            </div>
+            <div class="rrc-right">
+                <div class="rrc-driver">
+                    <?php if ($r['driver_foto']): ?>
+                        <img src="uploads/<?= h($r['driver_foto']) ?>" class="rrc-avatar" alt="">
+                    <?php else: ?>
+                        <div class="rrc-avatar rrc-avatar-init"><?= $initials ?></div>
+                    <?php endif; ?>
+                    <span class="rrc-driver-name"><?= h($r['driver_nome']) ?></span>
+                </div>
+                <div class="rrc-meta">
+                    <div class="rrc-stat">
+                        <span class="rrc-stat-val"><?= $r['distanza_km'] ?></span>
+                        <span class="rrc-stat-lbl">km da te</span>
+                    </div>
+                    <div class="rrc-stat">
+                        <span class="rrc-stat-val"><?= $r['posti_disponibili'] ?></span>
+                        <span class="rrc-stat-lbl">post<?= $r['posti_disponibili']==1?'o':'i' ?></span>
+                    </div>
+                    <div class="rrc-stat">
+                        <span class="rrc-stat-val"><?= $prezzo > 0 ? '€'.number_format($prezzo,0) : 'Free' ?></span>
+                        <span class="rrc-stat-lbl">a posto</span>
+                    </div>
+                </div>
+                <?php if (isLoggedIn()): ?>
+                <a href="richiedi_passaggio.php?offer=<?= $r['offer_id'] ?>" class="btn-primary rrc-cta">
+                    Richiedi posto
+                </a>
+                <?php else: ?>
+                <a href="auth.php" class="btn-secondary rrc-cta">Accedi per richiedere</a>
                 <?php endif; ?>
             </div>
         </div>
@@ -302,64 +272,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && (
 <?php endif; ?>
 
 <script>
-// ── Geocoding luogo utente ────────────────────────────────────
-var _lTimer = null;
+// ── Geocoding città utente ────────────────────────────────────
+var _lt = null;
 function searchLuogo(q) {
-    clearTimeout(_lTimer);
-    if (q.length < 2) { document.getElementById('luogoDropdown').style.display='none'; return; }
-    _lTimer = setTimeout(function() {
+    clearTimeout(_lt);
+    var dd = document.getElementById('luogoDropdown');
+    if (q.length < 2) { dd.innerHTML=''; dd.classList.remove('open'); return; }
+    _lt = setTimeout(function() {
         fetch('geocode_proxy.php?q=' + encodeURIComponent(q))
-            .then(r => r.json())
-            .then(data => showGeoDD(data.features||[]))
-            .catch(()=>{});
-    }, 350);
+            .then(function(r){ return r.json(); })
+            .then(function(d){ showGeoDD(d.features||[]); })
+            .catch(function(){});
+    }, 320);
 }
 
 function showGeoDD(features) {
     var dd = document.getElementById('luogoDropdown');
-    if (!features.length) { dd.style.display='none'; return; }
     dd.innerHTML = '';
+    if (!features.length) { dd.classList.remove('open'); return; }
     features.slice(0,6).forEach(function(f) {
-        var d = document.createElement('div');
-        d.className = 'autocomplete-item';
         var label = f.properties.label || f.properties.name || '';
-        d.innerHTML = '<div class="autocomplete-item-main">' + escHtml(label) + '</div>';
-        d.onclick = function() {
+        var item  = document.createElement('div');
+        item.className   = 'geo-dd-item';
+        item.textContent = label;
+        item.addEventListener('click', function() {
             document.getElementById('luogo_input').value = label;
             document.getElementById('ulat').value = f.geometry.coordinates[1];
             document.getElementById('ulon').value = f.geometry.coordinates[0];
-            dd.style.display = 'none';
-        };
-        dd.appendChild(d);
+            dd.classList.remove('open');
+        });
+        dd.appendChild(item);
     });
-    dd.style.display = 'block';
+    dd.classList.add('open');
 }
 
 function gpsRicerca() {
-    if (!navigator.geolocation) return alert('GPS non disponibile.');
+    var btn = document.querySelector('.geo-btn');
+    if (!navigator.geolocation) return;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     navigator.geolocation.getCurrentPosition(function(pos) {
         document.getElementById('ulat').value = pos.coords.latitude;
         document.getElementById('ulon').value = pos.coords.longitude;
+        btn.innerHTML = '<i class="fas fa-location-crosshairs"></i>';
         fetch('geocode_proxy.php?lat='+pos.coords.latitude+'&lon='+pos.coords.longitude)
-            .then(r=>r.json()).then(data=>{
-                var f=(data.features||[])[0];
-                if (f) document.getElementById('luogo_input').value = f.properties.label||f.properties.name||'';
+            .then(function(r){ return r.json(); })
+            .then(function(d){
+                var f=(d.features||[])[0];
+                if(f) document.getElementById('luogo_input').value = f.properties.label||f.properties.name||'';
             });
-    }, function(){ alert('Impossibile ottenere la posizione GPS.'); });
-}
-
-function escHtml(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }, function(){
+        btn.innerHTML = '<i class="fas fa-location-crosshairs"></i>';
+    });
 }
 
 document.addEventListener('click', function(e) {
-    if (!e.target.closest('.autocomplete-wrapper'))
-        document.querySelectorAll('.autocomplete-dropdown').forEach(d=>d.style.display='none');
+    if (!e.target.closest('.geo-field-wrap'))
+        document.getElementById('luogoDropdown').classList.remove('open');
+});
+
+// Valida che la città sia stata selezionata prima di inviare
+document.getElementById('searchForm').addEventListener('submit', function(e) {
+    var lat = document.getElementById('ulat').value;
+    var lon = document.getElementById('ulon').value;
+    if (!lat || !lon) {
+        e.preventDefault();
+        document.getElementById('luogo_input').focus();
+        document.getElementById('luogo_input').classList.add('input-error');
+        // Mostra hint
+        var hint = document.getElementById('luogo_hint');
+        if (!hint) {
+            hint = document.createElement('div');
+            hint.id = 'luogo_hint';
+            hint.className = 'field-error-hint';
+            hint.textContent = 'Seleziona una città dall\'elenco o usa il GPS';
+            document.getElementById('luogo_input').parentNode.appendChild(hint);
+        }
+    }
+});
+document.getElementById('luogo_input').addEventListener('input', function() {
+    // Resetta errore appena l'utente ridigita
+    document.getElementById('ulat').value = '';
+    document.getElementById('ulon').value = '';
+    this.classList.remove('input-error');
+    var hint = document.getElementById('luogo_hint');
+    if (hint) hint.remove();
 });
 
 function toggleTheme() {
     var t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
-    document.documentElement.setAttribute('data-theme',t);localStorage.setItem('theme',t);
+    document.documentElement.setAttribute('data-theme',t);
+    localStorage.setItem('theme',t);
 }
 </script>
 </body>

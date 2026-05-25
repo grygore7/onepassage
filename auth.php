@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
                 $otpUserId = $newId;
                 $successo  = $mailInviata
                     ? 'Account creato! Controlla la tua email per il codice di verifica.'
-                    : 'Account creato! Purtroppo l'email non è stata inviata — usa "Invia di nuovo" per ricevere il codice.';
+                    : 'Account creato! Purtroppo l\'email non è stata inviata — usa "Invia di nuovo" per ricevere il codice.';
             } catch (PDOException $e) {
                 if ($pdo->inTransaction()) $pdo->rollBack();
                 $errore = 'Errore durante la registrazione: ' . $e->getMessage();

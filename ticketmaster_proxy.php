@@ -12,7 +12,20 @@
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
-define('TM_API_KEY', getenv('TICKETMASTER_API_KEY'));
+// ──────────────────────────────────────────────────────────────
+// CONFIGURAZIONE — ottieni la chiave gratuita su
+// https://developer.ticketmaster.com (piano Developer = gratis)
+// ──────────────────────────────────────────────────────────────
+// ── API Key Ticketmaster ─────────────────────────────────────────
+// OPZIONE A (Railway / produzione): imposta la variabile d'ambiente
+//   TICKETMASTER_API_KEY=la_tua_chiave
+// su Railway → Settings → Variables
+//
+// OPZIONE B (sviluppo locale / XAMPP): sostituisci 'TUA_CHIAVE_TICKETMASTER'
+//   con la tua chiave ottenuta gratis su:
+//   https://developer.ticketmaster.com → "Get your API key" (piano Developer)
+//
+define('TM_API_KEY', getenv('TICKETMASTER_API_KEY') ?: 'TUA_CHIAVE_TICKETMASTER');
 
 $query = trim($_GET['q'] ?? '');
 if (strlen($query) < 2) {
@@ -22,16 +35,13 @@ if (strlen($query) < 2) {
 
 // Ticketmaster Discovery API — eventi in Italia, musica + sport
 $url = 'https://app.ticketmaster.com/discovery/v2/events.json?' . http_build_query([
-    'apikey'          => TM_API_KEY,
-    'keyword'         => $query,
-    'countryCode'     => 'IT',
-    // Ticketmaster: usa segmentName per filtrare musica + sport
-    // (classificationName accetta un solo valore per parametro)
-    'segmentName'     => 'Music',   // cambia in 'Sports' per sport
-    'size'            => 12,
-    'sort'            => 'date,asc',
-    'locale'          => '*',       // include eventi in italiano
-    'startDateTime'   => gmdate('Y-m-d\TH:i:s\Z')
+    'apikey'       => TM_API_KEY,
+    'keyword'      => $query,
+    'countryCode'  => 'IT',
+    'size'         => 10,
+    'sort'         => 'date,asc',
+    'locale'       => '*',
+    'startDateTime'=> gmdate('Y-m-d\TH:i:s\Z')
 ]);
 
 $ch = curl_init($url);
@@ -41,13 +51,13 @@ curl_setopt_array($ch, [
     CURLOPT_USERAGENT      => 'OnePassage/1.0',
     CURLOPT_SSL_VERIFYPEER => true,
 ]);
-$response = curl_exec($ch);
-$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$response  = curl_exec($ch);
+$httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $curlErrMsg = curl_error($ch);
 curl_close($ch);
 
 if ($response === false || $httpCode !== 200) {
-    $curlErr = curl_error($ch ?? null) ?: 'n/a';
+    $curlErr = $curlErrMsg ?: 'n/a';
     echo json_encode([
         'error'    => 'API non raggiungibile',
         'http_code'=> $httpCode,

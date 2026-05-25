@@ -47,8 +47,8 @@ $eventiEvidenza = $stmt->fetchAll();
      HERO — parallax + search bar centrata
 ══════════════════════════════════════════════ -->
 <section class="hero" id="hero">
-    <div class="hero-overlay"></div>
     <div class="hero-content">
+        <div class="hero-eyebrow">🎵 Concerti · Festival · Sport</div>
         <h1 class="hero-title" id="heroTitle">Dove vuoi andare?</h1>
 
         <!-- Search bar orizzontale centrata -->
@@ -106,39 +106,25 @@ $eventiEvidenza = $stmt->fetchAll();
         <?php else: ?>
         <div class="events-home-grid">
             <?php foreach ($eventiEvidenza as $ev):
-                $dataFmt = $ev['data_evento']
-                    ? (new DateTime($ev['data_evento']))->format('d M Y')
-                    : 'Data TBD';
-                $giorno  = $ev['data_evento']
-                    ? (new DateTime($ev['data_evento']))->format('d')
-                    : '--';
-                $mese    = $ev['data_evento']
-                    ? strtoupper((new DateTime($ev['data_evento']))->format('M'))
-                    : '---';
-                $prezzoLabel = $ev['prezzo_min'] > 0
-                    ? 'da €'.number_format($ev['prezzo_min'],0)
-                    : 'Gratuito';
+                $giorno = $ev['data_evento'] ? (new DateTime($ev['data_evento']))->format('d') : '--';
+                $mese   = $ev['data_evento'] ? strtoupper((new DateTime($ev['data_evento']))->format('M')) : '---';
+                $prezzoLabel = $ev['prezzo_min'] > 0 ? 'da €'.number_format($ev['prezzo_min'],0) : 'Gratuito';
             ?>
             <a href="ricerca.php?q=<?= urlencode($ev['nome_evento']) ?>" class="event-home-card">
-                <div class="event-home-date">
-                    <span class="event-home-day"><?= $giorno ?></span>
-                    <span class="event-home-month"><?= $mese ?></span>
-                </div>
-                <div class="event-home-body">
+                <div class="event-home-card-top">
                     <div class="event-home-title"><?= h($ev['nome_evento']) ?></div>
-                    <div class="event-home-meta">
-                        <span><i class="fas fa-map-marker-alt"></i> <?= h($ev['luogo']) ?></span>
-                    </div>
-                    <div class="event-home-chips">
-                        <span class="dash-chip dash-chip--green">
-                            <i class="fas fa-car"></i> <?= $ev['num_autisti'] ?> autist<?= $ev['num_autisti']==1?'a':'i' ?>
-                        </span>
-                        <span class="dash-chip dash-chip--<?= $ev['prezzo_min'] > 0 ? 'amber' : 'green' ?>">
-                            <i class="fas fa-euro-sign"></i> <?= $prezzoLabel ?>
-                        </span>
+                    <div class="event-home-date-badge">
+                        <span class="event-home-day"><?= $giorno ?></span>
+                        <span class="event-home-month"><?= $mese ?></span>
                     </div>
                 </div>
-                <div class="event-home-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="event-home-venue"><?= h($ev['luogo']) ?></div>
+                <div class="event-home-footer">
+                    <span class="event-home-drivers">
+                        <?= $ev['num_autisti'] ?> autist<?= $ev['num_autisti']==1?'a':'i' ?> disponibil<?= $ev['num_autisti']==1?'e':'i' ?>
+                    </span>
+                    <span class="event-home-price"><?= $prezzoLabel ?></span>
+                </div>
             </a>
             <?php endforeach; ?>
         </div>
@@ -165,14 +151,12 @@ $eventiEvidenza = $stmt->fetchAll();
                 <h3>Cerca il tuo evento</h3>
                 <p>Inserisci il nome del concerto o festival. Filtra per la tua città di partenza e imposta il raggio di ricerca in km.</p>
             </div>
-            <div class="how-connector"><i class="fas fa-arrow-right"></i></div>
             <div class="how-step">
                 <div class="how-step-num">02</div>
                 <div class="how-step-icon"><i class="fas fa-comments"></i></div>
                 <h3>Connettiti e chatta</h3>
                 <p>Richiedi un posto libero. La chat cifrata end-to-end ti permette di coordinare orari, punti di ritrovo e dettagli.</p>
             </div>
-            <div class="how-connector"><i class="fas fa-arrow-right"></i></div>
             <div class="how-step">
                 <div class="how-step-num">03</div>
                 <div class="how-step-icon"><i class="fas fa-star"></i></div>
@@ -255,29 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 80);
 });
 
-// ── Hero: aggiunge has-bg-image se l'immagine di sfondo esiste ──
-(function() {
-    var hero = document.getElementById('hero');
-    if (!hero) return;
-    var style = window.getComputedStyle(hero);
-    var bg    = style.backgroundImage;
-    // Se c'è un'immagine reale (non solo gradiente), aggiunge la classe
-    if (bg && bg !== 'none' && bg.indexOf('url(') !== -1 && bg.indexOf('images/hero-bg') !== -1) {
-        hero.classList.add('has-bg-image');
-    }
-})();
 
-// ── Hero: parallax scroll ─────────────────────────────────────
-window.addEventListener('scroll', function () {
-    var hero    = document.getElementById('hero');
-    var overlay = hero && hero.querySelector('.hero-overlay');
-    if (!hero) return;
-    var scrollY = window.pageYOffset;
-    // Muovi lo sfondo più lentamente dello scroll (effetto parallax)
-    hero.style.backgroundPositionY = Math.round(scrollY * 0.45) + 'px';
-    // Aumenta leggermente l'overlay man mano che si scrolla
-    if (overlay) overlay.style.opacity = Math.min(0.75, 0.45 + scrollY * 0.0008);
-}, { passive: true });
 
 // ── Geocoding campo città nella search bar ────────────────────
 var _heroLuogoTimer = null;
