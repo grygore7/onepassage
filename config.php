@@ -114,7 +114,11 @@ function inviaEmail(string $to, string $toName, string $subject, string $htmlBod
  
     $ch = curl_init('https://api.resend.com/emails');
     curl_setopt_array($ch, [
-        'Authorization: Bearer ' . $apiKey,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => $payload,
+        CURLOPT_HTTPHEADER     => [
+            'Authorization: Bearer ' . $apiKey,
             'Content-Type: application/json',
         ],
         CURLOPT_TIMEOUT        => 8,
