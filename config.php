@@ -45,7 +45,7 @@ function validaPassword(string $pwd): ?string {
     if (strlen($pwd) < 8)
         return 'La password deve contenere almeno 8 caratteri.';
     if (!preg_match('/[A-Z]/', $pwd))
-        return 'La password deve contenere almeno una lettera maiuscola.';
+        return 'La password deve contenere almeno una letter maiuscola.';
     if (!preg_match('/[0-9]/', $pwd))
         return 'La password deve contenere almeno un numero.';
     if (!preg_match('/[\W_]/', $pwd))
@@ -87,15 +87,13 @@ function verificaOTP(PDO $pdo, int $userId, string $codice): bool {
 //   1. Registrati su resend.com
 //   2. Vai su API Keys → Create API Key → copia la chiave
 //   3. Su Railway → Variables → aggiungi:
-//        RESEND_API_KEY = re_xxxxxxxxxxxxxxxxxxxx
+//       RESEND_API_KEY = re_xxxxxxxxxxxxxxxxxxxx
 //   4. In locale: sostituisci il fallback '' con la tua chiave
-//        getenv('RESEND_API_KEY') ?: 're_xxxx...'
+//       getenv('RESEND_API_KEY') ?: 're_xxxx...'
 //
-// Mittente in sviluppo: onboarding@resend.dev (nessun dominio richiesto)
-// Quando hai un dominio: aggiorna RESEND_FROM qui sotto.
-//
+// Mittente aggiornato per l'utilizzo del terzo livello validato su Aruba
 define('RESEND_API_KEY', getenv('RESEND_API_KEY') ?: '');
-define('RESEND_FROM',    getenv('RESEND_FROM')    ?: 'OnePassage <onboarding@resend.dev>');
+define('RESEND_FROM',    getenv('RESEND_FROM')    ?: 'OnePassage <noreply@send.onepassage.cloud>');
  
 function inviaEmail(string $to, string $toName, string $subject, string $htmlBody): bool {
     $apiKey = RESEND_API_KEY;
@@ -116,11 +114,7 @@ function inviaEmail(string $to, string $toName, string $subject, string $htmlBod
  
     $ch = curl_init('https://api.resend.com/emails');
     curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST           => true,
-        CURLOPT_POSTFIELDS     => $payload,
-        CURLOPT_HTTPHEADER     => [
-            'Authorization: Bearer ' . $apiKey,
+        'Authorization: Bearer ' . $apiKey,
             'Content-Type: application/json',
         ],
         CURLOPT_TIMEOUT        => 8,
@@ -183,7 +177,7 @@ function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string 
             <strong>{$nomePasseggero}</strong> ha richiesto un posto per
             <strong>{$nomeEvento}</strong>.
         </p>
-        <a href='https://onepassage.it/dashboard.php'
+        <a href='https://onepassage.cloud/dashboard.php'
            style='display:block;background:#10B981;color:#fff;padding:14px 24px;
                   border-radius:12px;text-decoration:none;font-weight:600;
                   text-align:center;margin:0 0 24px;'>
@@ -210,7 +204,7 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
             La tua richiesta per <strong>{$nomeEvento}</strong> è stata <strong>{$stato}</strong>.
         </p>
         <p style='color:#64748b;margin:0 0 24px;'>{$msg}</p>
-        <a href='https://onepassage.it/dashboard.php'
+        <a href='https://onepassage.cloud/dashboard.php'
            style='display:block;background:{$colore};color:#fff;padding:14px 24px;
                   border-radius:12px;text-decoration:none;font-weight:600;
                   text-align:center;margin:0 0 24px;'>
@@ -235,7 +229,7 @@ function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $st
         <div style='font-size:32px;color:#F59E0B;margin:0 0 24px;letter-spacing:4px;'>
             {$starsHtml}
         </div>
-        <a href='https://onepassage.it/profilo.php'
+        <a href='https://onepassage.cloud/profilo.php'
            style='display:block;background:#10B981;color:#fff;padding:14px 24px;
                   border-radius:12px;text-decoration:none;font-weight:600;
                   text-align:center;margin:0 0 24px;'>
