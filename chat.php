@@ -1,5 +1,24 @@
 <?php
 require_once 'config.php';
+// Timezone già impostato in config.php (Europe/Rome)
+// Helper per formattare le date nella chat con il timezone corretto
+function fmtChatTime(string $dbDatetime): string {
+    try {
+        $dt = new DateTime($dbDatetime, new DateTimeZone('UTC'));
+        $dt->setTimezone(new DateTimeZone('Europe/Rome'));
+        $oggi = new DateTime('today', new DateTimeZone('Europe/Rome'));
+        $ieri  = new DateTime('yesterday', new DateTimeZone('Europe/Rome'));
+        if ($dt->format('Y-m-d') === $oggi->format('Y-m-d')) {
+            return $dt->format('H:i');
+        } elseif ($dt->format('Y-m-d') === $ieri->format('Y-m-d')) {
+            return 'Ieri ' . $dt->format('H:i');
+        } else {
+            return $dt->format('d/m H:i');
+        }
+    } catch (Exception $e) {
+        return $dbDatetime;
+    }
+}
 
 if(!isLoggedIn()) {
     header('Location: auth.php');
@@ -92,7 +111,6 @@ switch($richiesta['stato']) {
             <a href="index.php" class="logo">OnePassage</a>
             <nav class="nav">
                 <a href="ricerca.php" class="nav-link">Eventi</a>
-                <a href="come-funziona.php" class="nav-link">Come funziona</a>
                 <a href="dashboard.php" class="nav-link">Dashboard</a>
                 <a href="profilo.php?id=<?= $_SESSION['user_id'] ?>" class="btn-outline">Profilo</a>
                 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
@@ -281,7 +299,7 @@ switch($richiesta['stato']) {
                             <?php endif; ?>
                             <div class="message-time">
                                 <?php if(!empty($msg['encrypted'])): ?><i class="fas fa-lock" style="font-size:9px;margin-right:3px;opacity:0.6"></i><?php endif; ?>
-                                <?= date('d/m H:i', strtotime($msg['created_at'])) ?>
+                                <?= fmtChatTime($msg['created_at']) ?>
                             </div>
                         </div>
                     </div>
