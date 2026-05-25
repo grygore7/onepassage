@@ -49,6 +49,23 @@ $stmt = $pdo->prepare("
 $stmt->execute([$userId]);
 $richieste_ricevute_raw = $stmt->fetchAll();
 
+// Query passaggi offerti (le mie offerte come autista)
+$stmt = $pdo->prepare("
+    SELECT
+        ro.*,
+        e.nome_evento,
+        e.data_evento,
+        e.luogo,
+        (SELECT COUNT(*) FROM ride_requests rr WHERE rr.offer_id = ro.id AND rr.stato = 'accettato') AS posti_occupati,
+        (SELECT COUNT(*) FROM ride_requests rr WHERE rr.offer_id = ro.id AND rr.stato = 'in_attesa') AS richieste_pendenti
+    FROM ride_offers ro
+    JOIN events e ON ro.event_id = e.id
+    WHERE ro.user_id = ?
+    ORDER BY e.data_evento ASC
+");
+$stmt->execute([$userId]);
+$mie_offerte = $stmt->fetchAll();
+
 // Separa future (evento non ancora avvenuto o accettato/in_attesa) da passate
 $now = time();
 $richieste_inviate_future  = array_filter($richieste_inviate,  fn($r) => strtotime($r['data_evento']) >= $now || in_array($r['stato'], ['in_attesa','accettato']));
@@ -256,6 +273,62 @@ $richieste_ricevute_passate= array_filter($richieste_ricevute_raw, fn($r) => str
             </div>
             <?php endforeach; ?>
             </div>
+            <?php endif; ?>
+        </div>
+
+        <!-- ── TAB: I miei Passaggi (offerte create) ── -->
+        <div id="mie-offerte-content" class="tab-content">
+            <?php if (empty($mie_offerte)): ?>
+            <div class="dash-empty">
+                <div class="dash-empty-icon"><i class="fas fa-route"></i></div>
+                <p>Non stai ancora offrendo nessun passaggio.</p>
+                <a href="offri_passaggio.php" class="btn-primary" style="margin-top:14px;">
+                    <i class="fas fa-plus"></i> Offri Passaggio
+                </a>
+            </div>
+            <?php else: ?>
+            <?php foreach ($mie_offerte as $o):
+                $dt = $o['data_evento'] ? new DateTime($o['data_evento']) : null;
+                $dataFmt = $dt ? $dt->format('d/m/Y H:i') : '—';
+                $isFuture = $dt && $dt->getTimestamp() >= time();
+                $accentCol = $isFuture ? 'green' : 'gray';
+            ?>
+            <div class="dash-card" data-search="<?= h(strtolower($o['nome_evento'].' '.$o['luogo'])) ?>">
+                <div class="dash-card-inner">
+                    <div class="dash-card-accent dash-card-accent--<?= $accentCol ?>"></div>
+                    <div class="dash-card-body">
+                        <div class="dash-card-top">
+                            <div>
+                                <div class="dash-card-title"><?= h($o['nome_evento']) ?></div>
+                                <div class="dash-card-meta">
+                                    <span><?= h($o['luogo']) ?></span>
+                                    <span><?= $dataFmt ?></span>
+                                    <span>Partenza: <?= h($o['punto_partenza']) ?></span>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start;">
+                                <?php if ($o['richieste_pendenti'] > 0): ?>
+                                <span class="dash-chip dash-chip--amber">
+                                    <?= $o['richieste_pendenti'] ?> in attesa
+                                </span>
+                                <?php endif; ?>
+                                <span class="dash-chip dash-chip--blue">
+                                    <?= (int)$o['posti_disponibili'] ?> posti liberi
+                                </span>
+                                <span class="dash-chip dash-chip--<?= $o['prezzo_per_posto'] > 0 ? 'amber' : 'green' ?>">
+                                    <?= $o['prezzo_per_posto'] > 0 ? '€'.number_format((float)$o['prezzo_per_posto'],2) : 'Gratuito' ?>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dash-card-actions">
+                        <a href="ricerca.php?q=<?= urlencode($o['nome_evento']) ?>" class="dash-btn dash-btn--secondary">
+                            <i class="fas fa-eye"></i> Vedi
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
             <?php endif; ?>
         </div>
 
