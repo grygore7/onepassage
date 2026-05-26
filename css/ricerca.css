@@ -346,3 +346,32 @@
     .search-filters-actions .btn-primary,
     .search-filters-actions .btn-secondary { width: 100%; justify-content: center; }
 }
+
+.search-filters,
+.search-filters-grid,
+.search-filter-field,
+.geo-field-wrap {
+    overflow: visible;
+}
+
+.search-filter-field {
+    position: relative;
+    z-index: 1;
+}
+
+.search-filter-field:focus-within {
+    z-index: 50;
+}
+
+.geo-field-wrap {
+    z-index: 60;
+}
+
+.geo-dropdown {
+    z-index: 3000;
+    max-height: 260px;
+    overflow-y: auto;
+    background: var(--color-card-hover);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
