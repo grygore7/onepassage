@@ -67,11 +67,28 @@ $stmt->execute([$userId]);
 $mie_offerte = $stmt->fetchAll();
 
 // Separa future (evento non ancora avvenuto o accettato/in_attesa) da passate
+// Separa richieste in attesa, passaggi confermati e storico
 $now = time();
-$richieste_inviate_future  = array_filter($richieste_inviate,  fn($r) => strtotime($r['data_evento']) >= $now || in_array($r['stato'], ['in_attesa','accettato']));
-$richieste_inviate_passate = array_filter($richieste_inviate,  fn($r) => strtotime($r['data_evento']) <  $now && !in_array($r['stato'], ['in_attesa','accettato']));
-$richieste_ricevute        = array_filter($richieste_ricevute_raw, fn($r) => strtotime($r['data_evento']) >= $now || in_array($r['stato'], ['in_attesa','accettato']));
-$richieste_ricevute_passate= array_filter($richieste_ricevute_raw, fn($r) => strtotime($r['data_evento']) <  $now && !in_array($r['stato'], ['in_attesa','accettato']));
+$richieste_in_attesa = array_filter(
+    $richieste_inviate,
+    fn($r) => $r['stato'] === 'in_attesa' && strtotime($r['data_evento']) >= $now
+);
+$mie_passaggi = array_filter(
+    $richieste_inviate,
+    fn($r) => $r['stato'] === 'accettato' && strtotime($r['data_evento']) >= $now
+);
+$richieste_inviate_passate = array_filter(
+    $richieste_inviate,
+    fn($r) => strtotime($r['data_evento']) < $now || in_array($r['stato'], ['rifiutato','concluso'], true)
+);
+$richieste_ricevute = array_filter(
+    $richieste_ricevute_raw,
+    fn($r) => strtotime($r['data_evento']) >= $now || in_array($r['stato'], ['in_attesa','accettato'], true)
+);
+$richieste_ricevute_passate = array_filter(
+    $richieste_ricevute_raw,
+    fn($r) => strtotime($r['data_evento']) < $now && !in_array($r['stato'], ['in_attesa','accettato'], true)
+);
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -100,7 +117,7 @@ $richieste_ricevute_passate= array_filter($richieste_ricevute_raw, fn($r) => str
                 </div>
                 <div class="dash-stats">
                     <div class="dash-stat">
-                        <span class="dash-stat-num"><?= count($richieste_inviate_future) ?></span>
+                        <span class="dash-stat-num"><?= count($richieste_in_attesa) ?></span>
                         <span class="dash-stat-label">Richieste attive</span>
                     </div>
                     <div class="dash-stat-divider"></div>
@@ -127,25 +144,31 @@ $richieste_ricevute_passate= array_filter($richieste_ricevute_raw, fn($r) => str
 
         <!-- Tabs -->
         <div class="tabs" id="mainTabs">
-            <button class="tab active" data-tab="richieste" onclick="switchTab('richieste')">
-                <i class="fas fa-paper-plane"></i> Richieste Inviate
-                <?php $nFut = count($richieste_inviate_future); if($nFut > 0): ?>
-                <span class="badge badge-pending" style="margin-left:8px"><?= $nFut ?></span>
-                <?php endif; ?>
-            </button>
-            <button class="tab" data-tab="offerte" onclick="switchTab('offerte')">
-                <i class="fas fa-car"></i> Offerte Gestite
-                <?php $nOff = count($richieste_ricevute); if($nOff > 0): ?>
-                <span class="badge badge-success" style="margin-left:8px"><?= $nOff ?></span>
-                <?php endif; ?>
-            </button>
-            <button class="tab" data-tab="passati" onclick="switchTab('passati')">
-                <i class="fas fa-history"></i> Storico
-                <?php $nPast = count($richieste_inviate_passate) + count($richieste_ricevute_passate); if($nPast > 0): ?>
-                <span class="badge badge-pending" style="margin-left:8px"><?= $nPast ?></span>
-                <?php endif; ?>
-            </button>
-        </div><!-- /tabs -->
+    <button class="tab active" data-tab="richieste" onclick="switchTab('richieste')">
+        <i class="fas fa-paper-plane"></i> Richieste Inviate
+        <?php $nFut = count($richieste_in_attesa); if($nFut > 0): ?>
+        <span class="badge badge-pending"><?= $nFut ?></span>
+        <?php endif; ?>
+    </button>
+    <button class="tab" data-tab="passaggi" onclick="switchTab('passaggi')">
+        <i class="fas fa-ticket-alt"></i> I miei passaggi
+        <?php $nPassaggi = count($mie_passaggi); if($nPassaggi > 0): ?>
+        <span class="badge badge-success"><?= $nPassaggi ?></span>
+        <?php endif; ?>
+    </button>
+    <button class="tab" data-tab="offerte" onclick="switchTab('offerte')">
+        <i class="fas fa-car"></i> Offerte Gestite
+        <?php $nOff = count($richieste_ricevute); if($nOff > 0): ?>
+        <span class="badge badge-success"><?= $nOff ?></span>
+        <?php endif; ?>
+    </button>
+    <button class="tab" data-tab="passati" onclick="switchTab('passati')">
+        <i class="fas fa-history"></i> Storico
+        <?php $nPast = count($richieste_inviate_passate) + count($richieste_ricevute_passate); if($nPast > 0): ?>
+        <span class="badge badge-pending"><?= $nPast ?></span>
+        <?php endif; ?>
+    </button>
+</div><!-- /tabs -->
         <div class="dash-panel-divider"></div>
 
         <!-- ── Contenuto tab ── -->
@@ -164,7 +187,7 @@ $richieste_ricevute_passate= array_filter($richieste_ricevute_raw, fn($r) => str
         <div class="tab-content-grid">
         <!-- ── TAB: Richieste Inviate ── -->
         <div id="richieste-content" class="tab-content active">
-            <?php if(empty($richieste_inviate_future)): ?>
+            <?php if(empty($richieste_in_attesa)): ?>
             <div class="dash-empty">
                 <div class="dash-empty-icon"><i class="fas fa-paper-plane"></i></div>
                 <h3>Nessuna richiesta attiva</h3>
@@ -173,7 +196,7 @@ $richieste_ricevute_passate= array_filter($richieste_ricevute_raw, fn($r) => str
             </div>
             <?php else: ?>
             <div class="dash-cards">
-            <?php foreach($richieste_inviate_future as $richiesta): ?>
+            <?php foreach($richieste_in_attesa as $richiesta): ?>
             <?php
                 switch($richiesta['stato']) {
                     case 'in_attesa': $accentCol='blue';  $chipCol='blue';  $badgeIcon='clock';          $statoText='In Attesa'; break;
@@ -183,6 +206,55 @@ $richieste_ricevute_passate= array_filter($richieste_ricevute_raw, fn($r) => str
                     default:          $accentCol='blue';  $chipCol='blue';  $badgeIcon='circle';         $statoText=ucfirst($richiesta['stato']);
                 }
             ?>
+
+                <div id="passaggi-content" class="tab-content">
+    <?php if(empty($mie_passaggi)): ?>
+    <div class="dash-empty">
+        <div class="dash-empty-icon"><i class="fas fa-ticket-alt"></i></div>
+        <h3>Nessun passaggio confermato</h3>
+        <p>Quando un autista accetta una tua richiesta, il viaggio apparira' qui.</p>
+        <a href="ricerca.php" class="dash-btn dash-btn--primary" style="margin-top:8px">
+            <i class="fas fa-search"></i> Trova passaggio
+        </a>
+    </div>
+    <?php else: ?>
+    <div class="dash-cards">
+    <?php foreach($mie_passaggi as $richiesta): ?>
+        <div class="dash-card" data-search="<?= strtolower(h($richiesta['nome_evento']).' '.$richiesta['driver_nome'].' '.$richiesta['luogo']) ?>">
+            <div class="dash-card-inner">
+                <div class="dash-card-accent dash-card-accent--green"></div>
+                <div class="dash-card-body">
+                    <div class="dash-card-info">
+                        <div class="dash-card-top">
+                            <span class="dash-card-title"><?= h($richiesta['nome_evento']) ?></span>
+                            <span class="dash-chip dash-chip--green">
+                                <i class="fas fa-check-circle"></i> Confermato
+                            </span>
+                        </div>
+                        <div class="dash-card-meta">
+                            <span class="dash-meta-item"><i class="fas fa-user"></i> <?= h($richiesta['driver_nome']) ?> <?= h(substr($richiesta['driver_cognome'],0,1)) ?>.</span>
+                            <span class="dash-meta-item"><i class="fas fa-calendar"></i> <?= date('d/m/Y H:i', strtotime($richiesta['data_evento'])) ?></span>
+                            <span class="dash-meta-item"><i class="fas fa-map-marker-alt"></i> <?= h($richiesta['luogo']) ?></span>
+                        </div>
+                        <div class="dash-card-chips">
+                            <span class="dash-chip dash-chip--amber"><i class="fas fa-euro-sign"></i> &euro;<?= number_format($richiesta['prezzo_per_posto'],2) ?></span>
+                        </div>
+                    </div>
+                    <div class="dash-card-actions">
+                        <a href="chat.php?request=<?= $richiesta['id'] ?>" class="dash-btn dash-btn--primary">
+                            <i class="fas fa-comments"></i> Chat
+                        </a>
+                        <a href="profilo.php?id=<?= $richiesta['driver_id'] ?>" class="dash-btn dash-btn--secondary">
+                            <i class="fas fa-user"></i> Profilo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+</div>
             <div class="dash-card" data-search="<?= strtolower(h($richiesta['nome_evento']).' '.$richiesta['driver_nome'].' '.$richiesta['luogo']) ?>">
                 <div class="dash-card-inner">
                     <div class="dash-card-accent dash-card-accent--<?= $accentCol ?>"></div>
