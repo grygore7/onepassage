@@ -65,19 +65,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resend_otp'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
+
     if (empty($email) || empty($password)) {
         $errore = 'Inserisci email e password.';
     } else {
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
+
         if ($user && password_verify($password, $user['password_hash'])) {
-            // Controlla verifica email
-            if (!$user['email_verificata']) {
-                // Genera nuovo OTP e chiedi verifica
+            if (($user['ban_status'] ?? 'attivo') === 'bannato') {
+                $errore = 'Account sospeso. Contatta il supporto.';
+            } elseif (!$user['email_verificata']) {
                 $codice = generaOTP($pdo, $user['id']);
-                inviaEmail($user['email'], $user['nome'],
-                    'Verifica il tuo account OnePassage', emailOTP($user['nome'], $codice));
+                inviaEmail(
+                    $user['email'],
+                    $user['nome'],
+                    'Verifica il tuo account OnePassage',
+                    emailOTP($user['nome'], $codice)
+                );
+
                 $stepOTP   = true;
                 $otpUserId = $user['id'];
                 $successo  = 'Abbiamo inviato un nuovo codice a ' . h($email) . '.';
@@ -86,7 +93,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                 $_SESSION['user_nome']    = $user['nome'];
                 $_SESSION['user_cognome'] = $user['cognome'];
                 $_SESSION['user_email']   = $user['email'];
-                header('Location: dashboard.php'); exit;
+
+                header('Location: dashboard.php');
+                exit;
             }
         } else {
             $errore = 'Credenziali non valide.';
