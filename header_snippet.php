@@ -45,15 +45,6 @@ if ($_hLogged) {
                         <i class="fas fa-pen"></i> Modifica profilo
                     </a>
 
-                    <div class="drawer-divider"></div>
-<div class="drawer-footer">
-    <button type="button" class="drawer-link drawer-theme-toggle" onclick="toggleTheme()">
-        <i class="fas fa-adjust"></i> Cambia tema
-    </button>
-    <a href="auth.php?logout=1" class="drawer-link drawer-link--danger">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </a>
-</div>
                     
                     <a href="offri_passaggio.php" class="avatar-menu-item">
                         <i class="fas fa-car"></i> Offri passaggio
