@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Europe/Rome');
 session_start();
 
 // ── Database ─────────────────────────────────────────────────
@@ -16,6 +17,9 @@ try {
          PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
          PDO::ATTR_EMULATE_PREPARES   => false]
     );
+
+    $romeOffset = (new DateTime('now', new DateTimeZone('Europe/Rome')))->format('P');
+    $pdo->exec('SET time_zone = ' . $pdo->quote($romeOffset));
 } catch (PDOException $e) {
     die('Connessione DB fallita: ' . $e->getMessage());
 }
