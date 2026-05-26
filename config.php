@@ -372,15 +372,15 @@ function emailOTP(string $nome, string $codice): string
 /**
  * Notifica al guidatore una nuova richiesta di passaggio.
  *
- * @param string $nomeDriver     Nome del guidatore destinatario
+ * @param string $nomeDriver      Nome del guidatore destinatario
  * @param string $nomePasseggero Nome del passeggero richiedente
  * @param string $nomeEvento     Nome dell'evento musicale
+ * @param string $link           Link alla dashboard di gestione
  * @return string                HTML completo dell'email
  */
-function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string $nomeEvento): string
+function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string $nomeEvento, string $link = "https://onepassage.cloud/dashboard.php"): string
 {
     $body = '
-      <!-- Icona -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td align="center" style="padding-bottom: 28px;">
@@ -398,7 +398,6 @@ function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string 
         </tr>
       </table>
 
-      <!-- Titolo e intro -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td align="center" style="padding-bottom: 8px;">
@@ -424,13 +423,11 @@ function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string 
         </tr>
       </table>
 
-      <!-- Info card passeggero + evento -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0"
         style="background-color: #0F1A22; border-radius: 12px; border: 1px solid #1E2D38; margin-bottom: 24px;">
         <tr>
           <td style="padding: 20px 24px;">
 
-            <!-- Riga passeggero -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 16px;">
               <tr>
                 <td style="width: 32px; vertical-align: top; padding-top: 2px;">
@@ -452,12 +449,10 @@ function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string 
               </tr>
             </table>
 
-            <!-- Divisore -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 16px;">
               <tr><td style="height: 1px; background-color: #1E2D38;"></td></tr>
             </table>
 
-            <!-- Riga evento -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="width: 32px; vertical-align: top; padding-top: 2px;">
@@ -483,7 +478,6 @@ function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string 
         </tr>
       </table>
 
-      <!-- Testo secondario -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td align="center" style="padding-bottom: 28px;">
@@ -497,7 +491,6 @@ function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string 
         </tr>
       </table>
 
-      <!-- CTA Button -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td align="center" style="text-align: center;">
@@ -541,9 +534,10 @@ function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string 
  * @param string $nomePasseggero Nome del passeggero destinatario
  * @param string $nomeEvento     Nome dell'evento musicale
  * @param bool   $accettato      true = accettato, false = rifiutato
+ * @param string $link           Link ai dettagli o alla ricerca passaggi
  * @return string                HTML completo dell'email
  */
-function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $accettato): string
+function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $accettato, string $link = "https://onepassage.cloud/dashboard.php"): string
 {
     if ($accettato) {
         $accentColor   = '#10B981';
@@ -574,7 +568,6 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
     }
 
     $body = '
-      <!-- Icona esito -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td align="center" style="padding-bottom: 28px;">
@@ -592,7 +585,6 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
         </tr>
       </table>
 
-      <!-- Badge stato -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td align="center" style="padding-bottom: 14px;">
@@ -612,7 +604,6 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
         </tr>
       </table>
 
-      <!-- Titolo -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td align="center" style="padding-bottom: 10px;">
@@ -638,7 +629,6 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
         </tr>
       </table>
 
-      <!-- Card evento -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0"
         style="background-color: #0F1A22; border-radius: 12px; border: 1px solid #1E2D38; margin-bottom: 24px;">
         <tr>
@@ -667,7 +657,6 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
         </tr>
       </table>
 
-      <!-- Testo secondario -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td align="center" style="padding-bottom: 28px;">
@@ -681,7 +670,6 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
         </tr>
       </table>
 
-      <!-- CTA Button -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td align="center" style="text-align: center;">
@@ -691,7 +679,7 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
                   <a href="' . htmlspecialchars($link) . '"
                     style="
                 display: inline-block;
-                background-color: ' . $accentColor . ';
+                background-color: #accentColor;
                 color: #FFFFFF;
                 text-decoration: none;
                 font-size: 15px;
@@ -726,9 +714,10 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
  * @param string $nomeAutore    Nome di chi ha scritto la recensione
  * @param int    $stelle        Numero di stelle (1–5)
  * @param string $nomeEvento    Nome dell'evento a cui si riferisce la recensione
+ * @param string $link          Link al profilo utente per vedere i dettagli
  * @return string               HTML completo dell'email
  */
-function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $stelle, string $nomeEvento): string
+function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $stelle, string $nomeEvento, string $link = "https://onepassage.cloud/profilo.php"): string
 {
     // Stelle HTML: ★ piene ambra, ☆ vuote grigio scuro
     $stelle = max(1, min(5, $stelle));
@@ -757,7 +746,6 @@ function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $st
     }
 
     $body = '
-      <!-- Icona -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td align="center" style="padding-bottom: 28px;">
@@ -775,7 +763,6 @@ function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $st
         </tr>
       </table>
 
-      <!-- Titolo -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td align="center" style="padding-bottom: 6px;">
@@ -801,7 +788,6 @@ function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $st
         </tr>
       </table>
 
-      <!-- Stars box -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td align="center" style="padding-bottom: 28px;">
@@ -828,13 +814,11 @@ function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $st
         </tr>
       </table>
 
-      <!-- Info card autore + evento -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0"
         style="background-color: #0F1A22; border-radius: 12px; border: 1px solid #1E2D38; margin-bottom: 24px;">
         <tr>
           <td style="padding: 20px 24px;">
 
-            <!-- Riga autore -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 16px;">
               <tr>
                 <td style="width: 32px; vertical-align: top; padding-top: 2px;">
@@ -856,12 +840,10 @@ function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $st
               </tr>
             </table>
 
-            <!-- Divisore -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 16px;">
               <tr><td style="height: 1px; background-color: #1E2D38;"></td></tr>
             </table>
 
-            <!-- Riga evento -->
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="width: 32px; vertical-align: top; padding-top: 2px;">
@@ -887,7 +869,6 @@ function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $st
         </tr>
       </table>
 
-      <!-- CTA Button -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td align="center" style="text-align: center;">
