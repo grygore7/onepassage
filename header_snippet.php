@@ -113,17 +113,20 @@ if ($_hLogged) {
         </a>
         <div class="drawer-divider"></div>
         <div class="drawer-footer">
-            <a href="auth.php?logout=1" class="drawer-link" style="color:#EF4444;">
+            <a href="auth.php?logout=1" class="drawer-link drawer-link--danger">
                 <i class="fas fa-sign-out-alt" style="color:#EF4444;"></i> Logout
             </a>
         </div>
         <?php else: ?>
         <div class="drawer-divider"></div>
-        <div class="drawer-footer">
-            <a href="auth.php" class="drawer-link" style="background:var(--color-accent);color:#fff;border-radius:14px;justify-content:center;">
-                <i class="fas fa-user"></i> Accedi / Registrati
-            </a>
-        </div>
+<div class="drawer-footer">
+    <button type="button" class="drawer-link drawer-theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-adjust"></i> Cambia tema
+    </button>
+    <a href="auth.php?logout=1" class="drawer-link drawer-link--danger">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</div>
         <?php endif; ?>
     </div>
 </div>
