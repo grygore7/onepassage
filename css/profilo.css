@@ -238,3 +238,14 @@
     /* No hover lift */
     .ride-card:hover  { transform: none; }
 }
+
+.profile-avatar {
+    overflow: hidden;
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
