@@ -95,6 +95,46 @@ a {
     text-decoration: none;
     color: inherit;
 }
+a,
+a:link,
+a:visited,
+a:hover,
+a:active {
+    text-decoration: none;
+}
+
+a:link,
+a:visited {
+    color: inherit;
+}
+
+.logo,
+.logo:link,
+.logo:visited,
+.nav-link,
+.nav-link:link,
+.nav-link:visited,
+.drawer-link,
+.drawer-link:link,
+.drawer-link:visited,
+.avatar-menu-item,
+.avatar-menu-item:link,
+.avatar-menu-item:visited {
+    color: var(--color-text-primary);
+    text-decoration: none;
+}
+
+.nav-icon-btn,
+.nav-icon-btn:link,
+.nav-icon-btn:visited {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+}
+
+.nav-icon-btn:hover,
+.nav-icon-btn:active {
+    color: var(--color-accent);
+}
 
 /* ===================================
    3. TIPOGRAFIA
@@ -953,3 +993,65 @@ select:hover {
 }
 .btn-primary:hover  { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,.3); }
 .btn-secondary:hover{ transform: translateY(-1px); }
+
+.drawer-theme-toggle {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    text-align: left;
+}
+
+.drawer-link--danger,
+.drawer-link--danger:link,
+.drawer-link--danger:visited,
+.drawer-link--danger i {
+    color: #EF4444;
+}
+
+.drawer-link--danger:hover,
+.drawer-link--danger:hover i {
+    color: #DC2626;
+}
+
+.mobile-nav-drawer .drawer-footer {
+    padding-top: 12px;
+    border-top: 0;
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        gap: 14px;
+    }
+
+    .nav {
+        margin-left: auto;
+        gap: 10px;
+    }
+
+    .nav-icon-btn {
+        order: 1;
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1.5px solid var(--color-border);
+        border-radius: 50%;
+    }
+
+    .nav-hamburger {
+        order: 2;
+        display: flex;
+        border-radius: 50%;
+    }
+
+    .header-avatar-wrap {
+        order: 3;
+    }
+
+    .theme-toggle,
+    .nav-link:not(.header-auth-btn) {
+        display: none;
+    }
+}
