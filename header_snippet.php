@@ -58,12 +58,9 @@ if ($_hLogged) {
 
             <?php else: ?>
             <!-- Non loggato -->
-            <div class="drawer-divider"></div>
-<div class="drawer-footer">
-    <a href="auth.php" class="drawer-link drawer-login-link">
-        <i class="fas fa-user"></i> Accedi / Registrati
-    </a>
-</div>
+            <a href="auth.php" class="header-auth-btn">
+                <i class="fas fa-user"></i> Accedi
+            </a>
             <?php endif; ?>
 
             <!-- Hamburger mobile -->
