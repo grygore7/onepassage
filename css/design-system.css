@@ -1080,3 +1080,35 @@ select:hover {
 .nav-icon-btn:focus {
     color: var(--color-accent) !important;
 }
+
+.drawer-theme-toggle {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    text-align: left;
+}
+
+.drawer-link--danger,
+.drawer-link--danger:link,
+.drawer-link--danger:visited,
+.drawer-link--danger i {
+    color: #EF4444 !important;
+}
+
+.drawer-link--danger:hover,
+.drawer-link--danger:hover i {
+    color: #DC2626 !important;
+}
+
+.drawer-login-link {
+    background: var(--color-accent);
+    color: #fff !important;
+    border-radius: 14px;
+    justify-content: center;
+}
+
+.mobile-nav-drawer .drawer-footer {
+    padding-top: 12px;
+    border-top: 0;
+}
