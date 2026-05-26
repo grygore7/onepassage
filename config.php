@@ -137,8 +137,6 @@ function inviaEmail(string $to, string $toName, string $subject, string $htmlBod
 }
  
 // ── Template email OTP ────────────────────────────────────────
-<?php
-
 function _op_email_wrap(string $bodyContent, string $accentColor = '#10B981'): string
 {
     return '<!DOCTYPE html>
