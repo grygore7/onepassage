@@ -78,8 +78,12 @@ $prossimi_passaggi = $stmt->fetchAll();
             <div class="card" style="margin-bottom: 32px;">
                 <div class="profile-hero">
                     <div class="profile-avatar">
-                        <?= strtoupper(substr($utente['nome'], 0, 1)) ?>
-                    </div>
+    <?php if (!empty($utente['foto_profilo'])): ?>
+        <img src="uploads/<?= h(basename($utente['foto_profilo'])) ?>" alt="Foto profilo">
+    <?php else: ?>
+        <?= strtoupper(substr($utente['nome'], 0, 1) . substr($utente['cognome'], 0, 1)) ?>
+    <?php endif; ?>
+</div>
                     <div class="profile-info">
                         <h1 class="profile-name"><?= h($utente['nome']) ?> <?= h($utente['cognome']) ?></h1>
 
