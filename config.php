@@ -172,7 +172,7 @@ function _op_email_wrap(string $bodyContent, string $accentColor = '#10B981'): s
               <table cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td style="vertical-align: middle;">
-                    <img src="favicon.ico"
+                    <img src="https://onepassage.cloud/favicon.ico"
                       alt="OnePassage"
                       width="40"
                       height="40"
@@ -239,7 +239,7 @@ function _op_email_wrap(string $bodyContent, string $accentColor = '#10B981'): s
                 line-height: 1.5;
               ">
                 Hai ricevuto questa email perché sei registrato su OnePassage.<br>
-                Per assistenza scrivici a <span style="color: #334155;">support@onepassage.app</span>
+                Per assistenza scrivici a <span style="color: #334155;">support@onepassage.cloud</span>
               </p>
             </td>
           </tr>
