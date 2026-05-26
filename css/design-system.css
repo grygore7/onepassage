@@ -1055,3 +1055,28 @@ select:hover {
         display: none;
     }
 }
+
+.nav-icon-btn,
+.nav-icon-btn:link,
+.nav-icon-btn:visited,
+.nav-icon-btn:hover,
+.nav-icon-btn:active,
+.nav-icon-btn:focus {
+    color: var(--color-text-secondary) !important;
+    text-decoration: none !important;
+}
+
+.nav-icon-btn i,
+.nav-icon-btn:link i,
+.nav-icon-btn:visited i,
+.nav-icon-btn:hover i,
+.nav-icon-btn:active i,
+.nav-icon-btn:focus i {
+    color: currentColor !important;
+}
+
+.nav-icon-btn:hover,
+.nav-icon-btn:active,
+.nav-icon-btn:focus {
+    color: var(--color-accent) !important;
+}
