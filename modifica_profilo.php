@@ -80,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!is_dir(__DIR__ . '/uploads')) mkdir(__DIR__ . '/uploads', 0755, true);
             if (move_uploaded_file($_FILES['foto']['tmp_name'], $dest)) {
                 $pdo->prepare("UPDATE users SET foto_profilo=? WHERE id=?")->execute([$filename, $userId]);
+                $_SESSION['user_foto_profilo'] = $filename;
             }
         }
     }
