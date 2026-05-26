@@ -151,3 +151,22 @@
     /* Numero posti e prezzo: stack verticale */
     .form-grid-2 .form-group { margin-bottom: 16px; }
 }
+
+.autocomplete-wrapper {
+    position: relative;
+    overflow: visible;
+    z-index: 1;
+}
+
+.autocomplete-wrapper:focus-within {
+    z-index: 80;
+}
+
+.autocomplete-dropdown {
+    z-index: 3000;
+    max-height: 280px;
+    overflow-y: auto;
+    background: var(--color-card-hover);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
