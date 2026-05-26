@@ -390,3 +390,17 @@
     .otp-field { font-size: 24px; letter-spacing: 8px; }
     .auth-otp-card { padding: 24px 16px; }
 }
+
+/* Nasconde il reveal password nativo del browser: usiamo il bottone custom a destra */
+.input-password-wrap input[type="password"]::-ms-reveal,
+.input-password-wrap input[type="password"]::-ms-clear {
+    display: none;
+}
+
+.input-password-wrap input[type="password"]::-webkit-credentials-auto-fill-button,
+.input-password-wrap input[type="password"]::-webkit-caps-lock-indicator,
+.input-password-wrap input[type="password"]::-webkit-contacts-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+}
