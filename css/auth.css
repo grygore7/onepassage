@@ -8,55 +8,80 @@
     padding-bottom: 60px;
 }
 
-/* ── Tabs ── */
+/* Panel unico: tabs + form */
 .auth-container .tabs {
     display: flex;
     gap: 0;
-    border-bottom: 1px solid var(--color-border);
-    margin-bottom: 0;
-    padding: 0;
-    background: transparent;
-    border-radius: 0;
     width: 100%;
-    overflow: visible;
+    padding: 0 32px;
+    margin: 0;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-bottom: none;
+    border-radius: 20px 20px 0 0;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
 }
+
 .auth-container .tab {
     flex: 1;
-    padding: 14px 20px;
-    border-radius: 0;
+    padding: 18px 16px 14px;
     border: none;
     border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
+    margin: 0;
+    border-radius: 0;
     background: transparent;
     color: var(--color-text-secondary);
     font-size: 15px;
     font-weight: 600;
     font-family: 'Inter', sans-serif;
     cursor: pointer;
-    transition: color .18s, border-color .18s;
+    transition: color .18s, border-color .18s, background .18s;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
 }
-.auth-container .tab:hover  { color: var(--color-text-primary); }
+
+.auth-container .tab:hover {
+    color: var(--color-text-primary);
+    background: rgba(16,185,129,.04);
+}
+
 .auth-container .tab.active {
     color: var(--color-accent);
     border-bottom-color: var(--color-accent);
     font-weight: 700;
 }
 
-/* ── Tab content ── */
-.tab-content         { display: none; }
-.tab-content.active  { display: block; }
+/* Tab content */
+.auth-container .tab-content {
+    display: none;
+}
 
-/* ── Auth Card ── */
+.auth-container .tab-content.active {
+    display: block;
+}
+
+/* Card form: continua il panel dei tab */
 .auth-container .card {
+    margin: 0 0 28px;
+    padding: 28px 32px 32px;
     border-radius: 0 0 20px 20px;
     border-top: none;
-    padding: 28px 32px 32px;
-    margin-bottom: 28px;
+    background: var(--color-card-bg);
+    box-shadow: var(--shadow-sm);
+    transform: none;
 }
+
+.auth-container .card:hover {
+    transform: none;
+    box-shadow: var(--shadow-sm);
+    background: var(--color-card-bg);
+}
+
 .auth-container .section-title {
     font-size: 22px;
     margin-bottom: 24px;
@@ -222,11 +247,22 @@
         padding-bottom: 40px;
     }
 
-    /* Card: no top rounded su mobile, full-bleed feel */
+    .auth-container .tabs {
+        padding: 0 18px;
+        border-radius: 16px 16px 0 0;
+    }
+
+    .auth-container .tab {
+        font-size: 14px;
+        padding: 15px 10px 12px;
+        gap: 6px;
+    }
+
     .auth-container .card {
         padding: 20px 18px 24px;
         border-radius: 0 0 16px 16px;
     }
+}
 
     .auth-container .section-title { font-size: 20px; margin-bottom: 20px; }
 
