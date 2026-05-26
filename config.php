@@ -504,7 +504,7 @@ function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string 
             <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
               <tr>
                 <td align="center" style="border-radius: 10px;">
-                  <a href="#"
+                  <a href="' . htmlspecialchars($link) . '"
                     style="
                 display: inline-block;
                 background-color: #10B981;
@@ -688,7 +688,7 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
             <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
               <tr>
                 <td align="center" style="border-radius: 10px;">
-                  <a href="#"
+                  <a href="' . htmlspecialchars($link) . '"
                     style="
                 display: inline-block;
                 background-color: ' . $accentColor . ';
@@ -894,7 +894,7 @@ function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $st
             <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
               <tr>
                 <td align="center" style="border-radius: 10px;">
-                  <a href="#"
+                  <a href="' . htmlspecialchars($link) . '"
                     style="
                 display: inline-block;
                 background-color: #F59E0B;
