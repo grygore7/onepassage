@@ -355,7 +355,7 @@ function emailOTP(string $nome, string $codice): string
               font-size: 13px;
               color: #475569;
               line-height: 1.6;
-            ">Questo codice scade tra <span style="color: #94A3B8;">10 minuti</span>. Non condividerlo con nessuno. OnePassage non ti chiederà mai questo codice via telefono o chat.</p>
+            ">Questo codice scade tra <span style="color: #94A3B8;">15 minuti</span>. Non condividerlo con nessuno. OnePassage non ti chiederà mai questo codice via telefono o chat.</p>
           </td>
         </tr>
       </table>
