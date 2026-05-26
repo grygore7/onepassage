@@ -3,6 +3,7 @@ $_hLogged   = isset($_SESSION['user_id']);
 $_hNome     = htmlspecialchars($_SESSION['user_nome']    ?? '', ENT_QUOTES, 'UTF-8');
 $_hCognome  = htmlspecialchars($_SESSION['user_cognome'] ?? '', ENT_QUOTES, 'UTF-8');
 $_hEmail    = htmlspecialchars($_SESSION['user_email']   ?? '', ENT_QUOTES, 'UTF-8');
+$_hFoto = $_SESSION['user_foto_profilo'] ?? '';
 $_hId       = (int)($_SESSION['user_id'] ?? 0);
 $_hInitials = '';
 if ($_hLogged) {
@@ -28,7 +29,11 @@ if ($_hLogged) {
                 <button class="header-avatar" id="avatarBtn"
                         onclick="toggleAvatarMenu(event)" aria-label="Menu utente"
                         aria-expanded="false">
-                    <?php echo $_hInitials; ?>
+                    <?php if (!empty($_hFoto)): ?>
+    <img src="uploads/<?php echo h(basename($_hFoto)); ?>" alt="Profilo">
+<?php else: ?>
+    <?php echo $_hInitials; ?>
+<?php endif; ?>
                 </button>
                 <div class="header-avatar-menu" id="avatarMenu">
                     <div class="avatar-menu-user">
