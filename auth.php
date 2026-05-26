@@ -34,6 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['verify_otp']) || iss
             $_SESSION['user_nome']    = $user['nome'];
             $_SESSION['user_cognome'] = $user['cognome'];
             $_SESSION['user_email']   = $user['email'];
+            $_SESSION['user_foto_profilo']  = $user['foto_profilo'] ?? '';
+            
             header('Location: dashboard.php'); exit;
         } else {
             $errore    = 'Codice non valido o scaduto.';
