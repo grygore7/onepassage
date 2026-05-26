@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /$
+Allow: /auth.php
+Allow: /ricerca.php
+Allow: /css/
+
+# Protezione pagine private (inutile farle indicizzare, richiedono la sessione)
+Disallow: /dashboard.php
+Disallow: /profilo.php
+Disallow: /chat.php
+Disallow: /offri_passaggio.php
+Disallow: /richiedi_passaggio.php
+
+# Protezione file di sistema e proxy backend
+Disallow: /config.php
+Disallow: /db.php
+Disallow: /*_proxy.php
+Disallow: /*_poll.php
+
+# Link alla sitemap (aggiornalo con il tuo dominio definitivo)
+Sitemap: https://www.onepassage.cloud/sitemap.xml
