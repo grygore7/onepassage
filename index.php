@@ -91,9 +91,6 @@ $eventiEvidenza = $stmt->fetchAll();
                 <h2 class="section-title">Eventi in evidenza</h2>
                 <p class="section-sub">I 6 eventi con più autisti disponibili al momento</p>
             </div>
-            <a href="ricerca.php" class="btn-secondary">
-                <i class="fas fa-th-list"></i> Vedi tutti
-            </a>
         </div>
 
         <?php if (empty($eventiEvidenza)): ?>
