@@ -212,6 +212,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
 
 <?php else: ?>
     <!-- ── TABS LOGIN / REGISTRAZIONE ── -->
+    <?php if ($errore): ?>
+    <div class="alert alert-error" style="margin-top:12px;">
+        <i class="fas fa-exclamation-circle"></i> <?= h($errore) ?>
+    </div>
+    <?php endif; ?>
+    <?php if ($successo): ?>
+    <div class="alert alert-success" style="margin-top:12px;">
+        <i class="fas fa-check-circle"></i> <?= h($successo) ?>
+    </div>
+    <?php endif; ?>
+    
     <div class="tabs" id="authTabs">
         <button class="tab active" data-tab="login" onclick="switchAuthTab('login')">
             <i class="fas fa-sign-in-alt"></i> Accedi
@@ -220,10 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
             <i class="fas fa-user-plus"></i> Registrati
         </button>
     </div>
-
-    <?php if ($errore): ?><div class="alert alert-error" style="margin-top:12px;"><i class="fas fa-exclamation-circle"></i> <?= h($errore) ?></div><?php endif; ?>
-    <?php if ($successo): ?><div class="alert alert-success" style="margin-top:12px;"><i class="fas fa-check-circle"></i> <?= h($successo) ?></div><?php endif; ?>
-
+    
     <!-- LOGIN -->
     <div id="login-content" class="tab-content card active">
         <!-- SSO -->
