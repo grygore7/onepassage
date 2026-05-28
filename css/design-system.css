@@ -1123,3 +1123,25 @@ select:hover {
     object-fit: cover;
     display: block;
 }
+
+/* Disattiva hover lift sulle card statiche */
+.card:hover,
+form .card:hover,
+.profile-card:hover,
+.confirm-card:hover,
+.info-box:hover,
+.safety-box:hover {
+    transform: none !important;
+    box-shadow: var(--shadow-sm) !important;
+    background: var(--color-card-bg) !important;
+    border-color: var(--color-border) !important;
+}
+
+/* Mantieni hover solo su card realmente cliccabili/dinamiche */
+.event-card:hover,
+.event-home-card:hover,
+.ride-card:hover,
+.dash-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: var(--shadow-md) !important;
+}
