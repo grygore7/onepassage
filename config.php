@@ -198,7 +198,7 @@ function _op_email_wrap(string $bodyContent, string $accentColor = '#10B981'): s
               background-color: #151E24;
               border-radius: 16px;
               padding: 40px 40px 36px 40px;
-              border: 1px solid #1E2D38;
+              border: 1px solid #263744;
             ">
               ' . $bodyContent . '
             </td>
@@ -209,7 +209,7 @@ function _op_email_wrap(string $bodyContent, string $accentColor = '#10B981'): s
             <td style="padding: 28px 0 16px 0;">
               <table width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
-                  <td style="height: 1px; background-color: #1A2630;"></td>
+                  <td style="height: 1px; background-color: #263744;"></td>
                 </tr>
               </table>
             </td>
@@ -221,12 +221,12 @@ function _op_email_wrap(string $bodyContent, string $accentColor = '#10B981'): s
               <p style="
                 margin: 0;
                 font-size: 12px;
-                color: #334155;
+                color: #A7B3C4;
                 letter-spacing: 0.2px;
                 line-height: 1.6;
               ">
-                <span style="color: #475569; font-weight: 600;">OnePassage</span>
-                <span style="color: #334155;"> — Il passaggio intelligente per i tuoi eventi</span>
+                <span style="color: #CBD5E1; font-weight: 600;">OnePassage</span>
+                <span style="color: #A7B3C4;"> — Il passaggio intelligente per i tuoi eventi</span>
               </p>
             </td>
           </tr>
@@ -235,11 +235,11 @@ function _op_email_wrap(string $bodyContent, string $accentColor = '#10B981'): s
               <p style="
                 margin: 6px 0 0 0;
                 font-size: 11px;
-                color: #253040;
+                color: #94A3B8;
                 line-height: 1.5;
               ">
                 Hai ricevuto questa email perché sei registrato su OnePassage.<br>
-                Per assistenza scrivici a <span style="color: #334155;">support@onepassage.cloud</span>
+                Per assistenza scrivici a <span style="color: #CBD5E1;">support@onepassage.cloud</span>
               </p>
             </td>
           </tr>
@@ -305,7 +305,7 @@ function emailOTP(string $nome, string $codice): string
             <p style="
               margin: 0;
               font-size: 15px;
-              color: #64748B;
+              color: #CBD5E1;
               line-height: 1.6;
             ">Ciao <span style="color: #94A3B8; font-weight: 500;">' . htmlspecialchars($nome) . '</span>, usa il codice qui sotto per completare la verifica.</p>
           </td>
@@ -339,21 +339,21 @@ function emailOTP(string $nome, string $codice): string
 
       <!-- Note di sicurezza -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0"
-        style="background-color: #0F1A22; border-radius: 10px; border: 1px solid #1E2D38;">
+        style="background-color: #0F1A22; border-radius: 10px; border: 1px solid #263744;">
         <tr>
           <td style="padding: 16px 20px;">
             <p style="
               margin: 0 0 6px 0;
               font-size: 12px;
               font-weight: 600;
-              color: #475569;
+              color: #94A3B8;
               text-transform: uppercase;
               letter-spacing: 0.8px;
             ">Note di sicurezza</p>
             <p style="
               margin: 0;
               font-size: 13px;
-              color: #475569;
+              color: #94A3B8;
               line-height: 1.6;
             ">Questo codice scade tra <span style="color: #94A3B8;">15 minuti</span>. Non condividerlo con nessuno. OnePassage non ti chiederà mai questo codice via telefono o chat.</p>
           </td>
@@ -416,7 +416,7 @@ function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string 
             <p style="
               margin: 0;
               font-size: 15px;
-              color: #64748B;
+              color: #CBD5E1;
               line-height: 1.6;
             ">Ciao <span style="color: #94A3B8; font-weight: 500;">' . htmlspecialchars($nomeDriver) . '</span>, hai ricevuto una nuova richiesta.</p>
           </td>
@@ -424,7 +424,7 @@ function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string 
       </table>
 
       <table width="100%" cellpadding="0" cellspacing="0" border="0"
-        style="background-color: #0F1A22; border-radius: 12px; border: 1px solid #1E2D38; margin-bottom: 24px;">
+        style="background-color: #0F1A22; border-radius: 12px; border: 1px solid #263744; margin-bottom: 24px;">
         <tr>
           <td style="padding: 20px 24px;">
 
@@ -443,14 +443,14 @@ function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string 
                   ">&#128100;</span>
                 </td>
                 <td style="padding-left: 12px; vertical-align: top;">
-                  <p style="margin: 0 0 2px 0; font-size: 11px; color: #475569; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;">Passeggero</p>
+                  <p style="margin: 0 0 2px 0; font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;">Passeggero</p>
                   <p style="margin: 0; font-size: 17px; font-weight: 700; color: #FFFFFF;">' . htmlspecialchars($nomePasseggero) . '</p>
                 </td>
               </tr>
             </table>
 
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 16px;">
-              <tr><td style="height: 1px; background-color: #1E2D38;"></td></tr>
+              <tr><td style="height: 1px; background-color: #263744;"></td></tr>
             </table>
 
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -468,7 +468,7 @@ function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string 
                   ">&#127925;</span>
                 </td>
                 <td style="padding-left: 12px; vertical-align: top;">
-                  <p style="margin: 0 0 2px 0; font-size: 11px; color: #475569; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;">Evento</p>
+                  <p style="margin: 0 0 2px 0; font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;">Evento</p>
                   <p style="margin: 0; font-size: 17px; font-weight: 700; color: #10B981;">' . htmlspecialchars($nomeEvento) . '</p>
                 </td>
               </tr>
@@ -484,7 +484,7 @@ function emailNuovaRichiesta(string $nomeDriver, string $nomePasseggero, string 
             <p style="
               margin: 0;
               font-size: 14px;
-              color: #64748B;
+              color: #CBD5E1;
               line-height: 1.7;
             ">Accedi all\'app per vedere il profilo di <span style="color: #94A3B8;">' . htmlspecialchars($nomePasseggero) . '</span> e decidere se accettare o rifiutare la richiesta.</p>
           </td>
@@ -622,7 +622,7 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
             <p style="
               margin: 0;
               font-size: 15px;
-              color: #64748B;
+              color: #CBD5E1;
               line-height: 1.6;
             ">Ciao <span style="color: #94A3B8; font-weight: 500;">' . htmlspecialchars($nomePasseggero) . '</span>, ' . $sottotitoloEsito . ' <span style="color: #FFFFFF; font-weight: 600;">' . htmlspecialchars($nomeEvento) . '</span> ' . $sottotitoloPost . '</p>
           </td>
@@ -630,7 +630,7 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
       </table>
 
       <table width="100%" cellpadding="0" cellspacing="0" border="0"
-        style="background-color: #0F1A22; border-radius: 12px; border: 1px solid #1E2D38; margin-bottom: 24px;">
+        style="background-color: #0F1A22; border-radius: 12px; border: 1px solid #263744; margin-bottom: 24px;">
         <tr>
           <td style="padding: 18px 24px;">
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -648,7 +648,7 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
                   ">&#127925;</span>
                 </td>
                 <td style="padding-left: 12px; vertical-align: middle;">
-                  <p style="margin: 0 0 2px 0; font-size: 11px; color: #475569; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;">Evento</p>
+                  <p style="margin: 0 0 2px 0; font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;">Evento</p>
                   <p style="margin: 0; font-size: 16px; font-weight: 700; color: #FFFFFF;">' . htmlspecialchars($nomeEvento) . '</p>
                 </td>
               </tr>
@@ -663,7 +663,7 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
             <p style="
               margin: 0;
               font-size: 14px;
-              color: #64748B;
+              color: #CBD5E1;
               line-height: 1.7;
             ">' . $messaggioCorpo . '</p>
           </td>
@@ -679,7 +679,7 @@ function emailEsitoRichiesta(string $nomePasseggero, string $nomeEvento, bool $a
                   <a href="' . htmlspecialchars($link) . '"
                     style="
                 display: inline-block;
-                background-color: #accentColor;
+                background-color: ' . htmlspecialchars($accentColor, ENT_QUOTES, 'UTF-8') . ';
                 color: #FFFFFF;
                 text-decoration: none;
                 font-size: 15px;
@@ -726,7 +726,7 @@ function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $st
         if ($i <= $stelle) {
             $starsHtml .= '<span style="color: #F59E0B; font-size: 28px; letter-spacing: 4px;">&#9733;</span>';
         } else {
-            $starsHtml .= '<span style="color: #1E2D38; font-size: 28px; letter-spacing: 4px;">&#9733;</span>';
+            $starsHtml .= '<span style="color: #94A3B8; font-size: 28px; letter-spacing: 4px;">&#9733;</span>';
         }
     }
 
@@ -781,7 +781,7 @@ function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $st
             <p style="
               margin: 0;
               font-size: 15px;
-              color: #64748B;
+              color: #CBD5E1;
               line-height: 1.6;
             ">Ciao <span style="color: #94A3B8; font-weight: 500;">' . htmlspecialchars($nomeRicevente) . '</span>, ' . $subline . '</p>
           </td>
@@ -815,7 +815,7 @@ function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $st
       </table>
 
       <table width="100%" cellpadding="0" cellspacing="0" border="0"
-        style="background-color: #0F1A22; border-radius: 12px; border: 1px solid #1E2D38; margin-bottom: 24px;">
+        style="background-color: #0F1A22; border-radius: 12px; border: 1px solid #263744; margin-bottom: 24px;">
         <tr>
           <td style="padding: 20px 24px;">
 
@@ -834,14 +834,14 @@ function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $st
                   ">&#128393;</span>
                 </td>
                 <td style="padding-left: 12px; vertical-align: top;">
-                  <p style="margin: 0 0 2px 0; font-size: 11px; color: #475569; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;">Recensione di</p>
+                  <p style="margin: 0 0 2px 0; font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;">Recensione di</p>
                   <p style="margin: 0; font-size: 17px; font-weight: 700; color: #FFFFFF;">' . htmlspecialchars($nomeAutore) . '</p>
                 </td>
               </tr>
             </table>
 
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 16px;">
-              <tr><td style="height: 1px; background-color: #1E2D38;"></td></tr>
+              <tr><td style="height: 1px; background-color: #263744;"></td></tr>
             </table>
 
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -859,7 +859,7 @@ function emailNuovaRecensione(string $nomeRicevente, string $nomeAutore, int $st
                   ">&#127925;</span>
                 </td>
                 <td style="padding-left: 12px; vertical-align: top;">
-                  <p style="margin: 0 0 2px 0; font-size: 11px; color: #475569; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;">Evento</p>
+                  <p style="margin: 0 0 2px 0; font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;">Evento</p>
                   <p style="margin: 0; font-size: 17px; font-weight: 700; color: #F59E0B;">' . htmlspecialchars($nomeEvento) . '</p>
                 </td>
               </tr>

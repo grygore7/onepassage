@@ -184,8 +184,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="autocomplete-wrapper">
                         <input type="text" id="luogo_evento_manual" placeholder="Cerca venue o indirizzo..."
                                autocomplete="off" oninput="searchLuogoEvento(this.value)">
-                        <button type="button" class="geo-search-btn" onclick="gpsLuogoEvento()" title="Usa GPS">
-                            <i class="fas fa-location-arrow"></i>
+                        <button type="button" class="geo-search-btn" onclick="gpsLuogoEvento()" aria-label="Usa la tua posizione per il luogo evento">
+                            <i class="fas fa-location-arrow" aria-hidden="true"></i>
                         </button>
                         <div class="autocomplete-dropdown" id="luogoEventoDropdown" style="display:none;"></div>
                     </div>
@@ -202,9 +202,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="hidden" name="lon_evento"      id="h_lon_evento" value="0">
             <input type="hidden" name="event_id"        id="h_event_id"   value="0">
 
-            <button type="button" class="btn-secondary" style="width:100%;margin-top:4px;"
+            <button type="button" id="manualToggle" class="btn-secondary manual-toggle"
+                    aria-expanded="false"
+                    aria-controls="manualBlock"
                     onclick="toggleManual()">
-                <i class="fas fa-pen"></i> Aggiungi evento manualmente
+                <i class="fas fa-pen"></i> <span>Aggiungi evento manualmente</span>
             </button>
         </div>
 
@@ -216,8 +218,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="text" id="punto_partenza" name="punto_partenza"
                            placeholder="Es: Bareggio, Via Roma 1..."
                            autocomplete="off" oninput="searchPartenza(this.value)" required>
-                    <button type="button" class="geo-search-btn" onclick="gpsPartenza()" title="Usa GPS">
-                        <i class="fas fa-location-arrow"></i>
+                    <button type="button" class="geo-search-btn" onclick="gpsPartenza()" aria-label="Usa la tua posizione come punto di partenza">
+                        <i class="fas fa-location-arrow" aria-hidden="true"></i>
                     </button>
                     <div class="autocomplete-dropdown" id="partenzaDropdown" style="display:none;"></div>
                 </div>
@@ -337,7 +339,14 @@ function clearEvento() {
 
 function toggleManual() {
     _manualMode = !_manualMode;
-    document.getElementById('manualBlock').style.display = _manualMode ? 'block' : 'none';
+    var block = document.getElementById('manualBlock');
+    var toggle = document.getElementById('manualToggle');
+    block.style.display = _manualMode ? 'block' : 'none';
+    toggle.setAttribute('aria-expanded', _manualMode ? 'true' : 'false');
+    toggle.classList.toggle('is-active', _manualMode);
+    toggle.querySelector('span').textContent = _manualMode
+        ? 'Evento manuale attivo'
+        : 'Aggiungi evento manualmente';
     if (_manualMode) clearEvento();
 }
 

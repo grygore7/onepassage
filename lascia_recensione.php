@@ -94,11 +94,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 .trip-meta span{display:flex;align-items:center;gap:5px}
 .trip-profile{margin-left:auto;font-size:13px;font-weight:600;color:var(--color-accent);text-decoration:none;white-space:nowrap}
 .trip-profile:hover{text-decoration:underline}
+.rating-fieldset{border:0;padding:0;margin:0 0 20px}
+.rating-fieldset legend{font-size:14px;font-weight:700;color:var(--color-text-primary);margin-bottom:8px}
+.rating-fieldset legend i{color:var(--color-accent)}
 .stars-interactive{display:flex;flex-direction:row-reverse;justify-content:flex-end;gap:6px;margin:14px 0 10px}
-.stars-interactive input[type="radio"]{display:none}
-.stars-interactive label{font-size:38px;color:var(--color-border);cursor:pointer;transition:color .15s,transform .15s}
+.stars-interactive input[type="radio"]{position:absolute;inline-size:1px;block-size:1px;opacity:0;pointer-events:none}
+.stars-interactive label{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;font-size:38px;color:var(--color-border);cursor:pointer;transition:color .15s,transform .15s,outline-color .15s}
 .stars-interactive input:checked~label,.stars-interactive label:hover,.stars-interactive label:hover~label{color:#F59E0B}
 .stars-interactive label:hover{transform:scale(1.15)}
+.stars-interactive input:focus-visible+label{outline:2px solid var(--color-accent);outline-offset:3px}
 .stars-caption{font-size:14px;font-weight:600;color:var(--color-accent);min-height:20px;margin-bottom:20px}
 .report-link-row{margin-top:20px;padding:14px 18px;background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);border-radius:14px;font-size:13px;color:var(--color-text-secondary);display:flex;align-items:center;gap:10px}
 .report-link-row i{color:#EF4444;font-size:16px;flex-shrink:0}
@@ -162,17 +166,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <div class="card" style="padding:28px">
     <form method="POST" action="">
-      <label style="font-size:14px;font-weight:700;display:block;margin-bottom:4px">
-        <i class="fas fa-star" style="color:var(--color-accent)"></i>
+      <fieldset class="rating-fieldset">
+        <legend>
+          <i class="fas fa-star" aria-hidden="true"></i>
         Com'è stato il viaggio con <?= $targetNome ?>?
-      </label>
-      <div class="stars-interactive" id="starsRow">
+        </legend>
+        <div class="stars-interactive" id="starsRow" role="radiogroup" aria-describedby="starsCaption">
         <?php for ($i=5;$i>=1;$i--): ?>
         <input type="radio" name="stelle" id="star<?= $i ?>" value="<?= $i ?>" required>
-        <label for="star<?= $i ?>"><i class="fas fa-star"></i></label>
+          <label for="star<?= $i ?>" aria-label="<?= $i ?> stelle"><i class="fas fa-star" aria-hidden="true"></i></label>
         <?php endfor; ?>
-      </div>
-      <div class="stars-caption" id="starsCaption">Clicca per votare</div>
+        </div>
+        <div class="stars-caption" id="starsCaption" aria-live="polite">Seleziona una valutazione</div>
+      </fieldset>
 
       <div class="form-group">
         <label><i class="fas fa-comment-alt"></i> La tua recensione</label>

@@ -315,12 +315,21 @@ $richieste_ricevute_passate = array_filter(
                                         </div>
                                         <div class="dash-card-actions">
                                             <?php if ($richiesta['stato'] === 'in_attesa'): ?>
-                                            <a href="gestisci_richiesta.php?id=<?= (int)$richiesta['id'] ?>&action=accetta" class="dash-btn dash-btn--primary" onclick="return confirm('Accettare?')">
-                                                <i class="fas fa-check"></i> Accetta
-                                            </a>
-                                            <a href="gestisci_richiesta.php?id=<?= (int)$richiesta['id'] ?>&action=rifiuta" class="dash-btn dash-btn--secondary" onclick="return confirm('Rifiutare?')">
-                                                <i class="fas fa-times"></i> Rifiuta
-                                            </a>
+                                            <form method="get" action="gestisci_richiesta.php" class="dash-action-form">
+                                                <input type="hidden" name="id" value="<?= (int)$richiesta['id'] ?>">
+                                                <button type="submit" name="action" value="accetta" class="dash-btn dash-btn--primary"
+                                                        data-confirm-action="accetta"
+                                                        data-confirm-title="Accettare questa richiesta?"
+                                                        data-confirm-body="Il passeggero potrà aprire la chat e organizzarsi con te.">
+                                                    <i class="fas fa-check"></i> Accetta
+                                                </button>
+                                                <button type="submit" name="action" value="rifiuta" class="dash-btn dash-btn--danger"
+                                                        data-confirm-action="rifiuta"
+                                                        data-confirm-title="Rifiutare questa richiesta?"
+                                                        data-confirm-body="La richiesta verrà chiusa e il passeggero riceverà l'esito.">
+                                                    <i class="fas fa-times"></i> Rifiuta
+                                                </button>
+                                            </form>
                                             <?php elseif (in_array($richiesta['stato'], ['accettato', 'concluso'], true)): ?>
                                             <a href="chat.php?request=<?= (int)$richiesta['id'] ?>" class="dash-btn dash-btn--primary">
                                                 <i class="fas fa-comments"></i> Chat
@@ -414,7 +423,62 @@ $richieste_ricevute_passate = array_filter(
     </div>
 </div>
 
+<div class="op-modal-backdrop" id="opConfirmModal" hidden>
+    <div class="op-modal" role="dialog" aria-modal="true" aria-labelledby="opModalTitle">
+        <h2 id="opModalTitle">Conferma azione</h2>
+        <p id="opModalBody"></p>
+        <div class="op-modal-actions">
+            <button type="button" class="dash-btn dash-btn--secondary" data-modal-cancel>Annulla</button>
+            <button type="button" class="dash-btn dash-btn--primary" data-modal-confirm>Conferma</button>
+        </div>
+    </div>
+</div>
+
 <script>
+var pendingSubmitter = null;
+
+document.querySelectorAll('[data-confirm-action]').forEach(function(btn) {
+    btn.addEventListener('click', function(event) {
+        event.preventDefault();
+        pendingSubmitter = btn;
+
+        document.getElementById('opModalTitle').textContent = btn.dataset.confirmTitle;
+        document.getElementById('opModalBody').textContent = btn.dataset.confirmBody;
+
+        var modal = document.getElementById('opConfirmModal');
+        modal.hidden = false;
+        modal.querySelector('[data-modal-cancel]').focus();
+    });
+});
+
+document.querySelector('[data-modal-cancel]')?.addEventListener('click', function() {
+    document.getElementById('opConfirmModal').hidden = true;
+    pendingSubmitter = null;
+});
+
+document.querySelector('[data-modal-confirm]')?.addEventListener('click', function() {
+    if (!pendingSubmitter) return;
+    var form = pendingSubmitter.form;
+    var actionInput = form.querySelector('input[type="hidden"][name="action"]');
+    if (!actionInput) {
+        actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        form.appendChild(actionInput);
+    }
+    actionInput.value = pendingSubmitter.value;
+    pendingSubmitter.disabled = true;
+    pendingSubmitter.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Salvataggio...';
+    form.submit();
+});
+
+document.getElementById('opConfirmModal')?.addEventListener('click', function(event) {
+    if (event.target === this) {
+        this.hidden = true;
+        pendingSubmitter = null;
+    }
+});
+
 function switchTab(tab) {
     var button = document.querySelector('.tab[data-tab="' + tab + '"]');
     var panel = document.getElementById(tab + '-content');

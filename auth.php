@@ -201,13 +201,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
                 <i class="fas fa-check"></i> Verifica
             </button>
         </form>
-        <p class="otp-resend">
-            Non hai ricevuto il codice?
-            <form method="post" style="display:inline;">
+        <div class="otp-resend">
+            <span>Non hai ricevuto il codice?</span>
+            <form method="post" class="otp-resend-form">
                 <input type="hidden" name="otp_user_id" value="<?= $otpUserId ?>">
-                <button type="submit" name="resend_otp" style="background:none;border:none;color:var(--color-accent);font-weight:600;cursor:pointer;padding:0;font-size:inherit;">Invia di nuovo</button>
+                <button type="submit" name="resend_otp" class="otp-link-button">Invia di nuovo</button>
             </form>
-        </p>
+        </div>
     </div>
 
 <?php else: ?>
@@ -390,10 +390,7 @@ function checkPwdStrength(v) {
 var otpField = document.getElementById('otp_codice');
 if (otpField) {
     otpField.addEventListener('input', function() {
-        if (this.value.replace(/\D/g,'').length === 6) {
-            this.value = this.value.replace(/\D/g,'');
-            this.closest('form').submit();
-        }
+        this.value = this.value.replace(/\D/g,'').slice(0, 6);
     });
 }
 
