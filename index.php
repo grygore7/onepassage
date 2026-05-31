@@ -48,7 +48,6 @@ $eventiEvidenza = $stmt->fetchAll();
 ══════════════════════════════════════════════ -->
 <section class="hero" id="hero">
     <div class="hero-content">
-        <div class="hero-eyebrow">🎵 Concerti · Festival · Sport</div>
         <h1 class="hero-title" id="heroTitle">Dove vuoi andare?</h1>
 
         <!-- Search bar orizzontale centrata -->
