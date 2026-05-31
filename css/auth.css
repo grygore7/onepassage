@@ -262,7 +262,6 @@
         padding: 20px 18px 24px;
         border-radius: 0 0 16px 16px;
     }
-}
 
     .auth-container .section-title { font-size: 20px; margin-bottom: 20px; }
 
@@ -384,6 +383,34 @@
 }
 .otp-resend { font-size: 13px; color: var(--color-text-muted); margin-top: 20px; }
 .otp-resend a { color: var(--color-accent); font-weight: 600; }
+
+.otp-resend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.otp-resend-form {
+    display: inline;
+}
+
+.otp-link-button {
+    background: transparent;
+    border: 0;
+    color: var(--color-accent);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 2px;
+}
+
+.otp-link-button:hover,
+.otp-link-button:focus-visible {
+    color: var(--color-accent-dark);
+    text-decoration: underline;
+}
 
 @media (max-width: 480px) {
     .sso-btn { font-size: 13px; padding: 11px 16px; }

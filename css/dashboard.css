@@ -320,13 +320,14 @@
 }
 .dash-card-title {
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 750;
     color: var(--color-text-primary);
-    letter-spacing: -.01em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 320px;
+    letter-spacing: 0;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    max-width: min(100%, 520px);
+    line-height: 1.35;
 }
 .dash-card-meta {
     display: flex;
@@ -356,11 +357,11 @@
     font-size: 12px;
     font-weight: 600;
 }
-.dash-chip--green  { background:rgba(16,185,129,.1);  color:#10B981; }
-.dash-chip--blue   { background:rgba(59,130,246,.1);  color:#3B82F6; }
-.dash-chip--amber  { background:rgba(245,158,11,.1);  color:#F59E0B; }
-.dash-chip--red    { background:rgba(239,68,68,.1);   color:#EF4444; }
-.dash-chip--gray   { background:rgba(107,114,128,.1); color:#6B7280; }
+.dash-chip--green  { background:rgba(16,185,129,.12);  color:#34D399; }
+.dash-chip--blue   { background:rgba(96,165,250,.14);  color:#93C5FD; }
+.dash-chip--amber  { background:rgba(251,191,36,.14);  color:#FBBF24; }
+.dash-chip--red    { background:rgba(248,113,113,.14); color:#F87171; }
+.dash-chip--gray   { background:rgba(148,163,184,.14); color:#CBD5E1; }
 
 /* Azioni */
 .dash-card-actions {
@@ -374,7 +375,8 @@
     align-items: center;
     justify-content: center;
     gap: 7px;
-    padding: 9px 18px;
+    min-height: 44px;
+    padding: 10px 18px;
     border-radius: 12px;
     font-size: 13px;
     font-weight: 600;
@@ -389,8 +391,14 @@
 .dash-btn--primary:hover { background:var(--color-accent-dark); transform:translateY(-1px); box-shadow:0 4px 12px rgba(16,185,129,.3); }
 .dash-btn--secondary { background:transparent; color:var(--color-text-primary); border:1.5px solid var(--color-border); }
 .dash-btn--secondary:hover { border-color:var(--color-accent); color:var(--color-accent); background:rgba(16,185,129,.05); }
-.dash-btn--danger { background:transparent; color:#EF4444; border:1.5px solid rgba(239,68,68,.2); }
-.dash-btn--danger:hover { background:rgba(239,68,68,.07); border-color:#EF4444; }
+.dash-btn--danger { background:transparent; color:#F87171; border:1.5px solid rgba(248,113,113,.28); }
+.dash-btn--danger:hover { background:rgba(248,113,113,.09); border-color:#F87171; }
+.dash-btn:active { transform: scale(.98); }
+.dash-action-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
 /* ══════════════════════════════════════════════
    EMPTY STATE
@@ -402,8 +410,10 @@
     justify-content: center;
     text-align: center;
     padding: 64px 32px;
-    background: var(--color-card-bg);
-    border: 2px dashed var(--color-border);
+    background:
+        linear-gradient(180deg, rgba(16,185,129,.06), transparent),
+        var(--color-card-bg);
+    border: 1px dashed rgba(167, 179, 196, .28);
     border-radius: 24px;
     gap: 10px;
 }
@@ -456,7 +466,7 @@
     .dash-card-title   { font-size: 15px; max-width: 100%; white-space: normal; }
     .dash-card-meta    { flex-wrap: wrap; gap: 6px; font-size: 12px; }
     .dash-card-actions { flex-direction: row; flex-wrap: wrap; gap: 8px; padding: 10px 16px 14px; }
-    .dash-btn          { font-size: 12px; padding: 7px 14px; }
+    .dash-btn          { min-height: 46px; font-size: 14px; padding: 11px 16px; }
 }
 @media (max-width: 480px) {
     .dash-stat-divider { display: none; }
@@ -519,4 +529,54 @@
     opacity: 1;
     pointer-events: auto;
     animation: tabIn .18s ease;
+}
+
+.op-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, .62);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.op-modal-backdrop[hidden] {
+    display: none;
+}
+
+.op-modal {
+    width: min(100%, 420px);
+    background: var(--color-card-hover);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, .4);
+}
+
+.op-modal h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    color: var(--color-text-primary);
+}
+
+.op-modal p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.op-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+@media (max-width: 480px) {
+    .op-modal-actions {
+        flex-direction: column-reverse;
+    }
 }
