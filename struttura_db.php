@@ -576,11 +576,6 @@ function badgeClass(string $kind): string
                 </article>
             <?php endforeach; ?>
         </section>
-
-        <p class="footer-note">
-            Link discreto da inserire nel footer della landing page:
-            <code>&lt;a href="struttura_db.php"&gt;Struttura Database (Area Didattica)&lt;/a&gt;</code>
-        </p>
     </main>
 </body>
 </html>
