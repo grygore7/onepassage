@@ -54,7 +54,6 @@ $tables = [
         'relations' => [
             ['PK', '`id` identifica ogni evento.'],
             ['1:N', '`events(id)` -> `ride_offers.event_id`: un evento puo avere molti passaggi offerti.'],
-            ['NOTE', '`creato_da` e indicizzato ma nel dump non ha vincolo FK dichiarato.'],
         ],
     ],
     [
@@ -146,7 +145,6 @@ $tables = [
         'relations' => [
             ['FK', '`request_id` -> `ride_requests(id)` con `ON DELETE CASCADE`.'],
             ['1:N', 'Una richiesta puo avere piu record tecnici di chiave/salt.'],
-            ['NOTE', '`user_id` e usato come valore applicativo: 0 = salt chat, >0 = chiave legacy utente.'],
         ],
     ],
     [
