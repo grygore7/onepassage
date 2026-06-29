@@ -213,6 +213,7 @@ $eventiEvidenza = $stmt->fetchAll();
             <span style="color:var(--color-text-muted);font-size:13px;">
                 Il passaggio intelligente per i tuoi eventi
             </span>
+            <a href="struttura_db.php">Struttura Database (Area Didattica)</a>
         </div>
     </div>
 </footer>
